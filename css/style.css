@@ -809,16 +809,33 @@ h2{
 
 .jumpbar{
   position:sticky;top:0;z-index:20;
-  display:flex;gap:6px;overflow-x:auto;
+  display:flex;gap:6px;
   padding:10px 0;margin:6px 0 4px;
   background:linear-gradient(var(--page) 68%, rgb(var(--paper-rgb) / 0));
-  -webkit-overflow-scrolling:touch;
-  scrollbar-width:none;
 }
-.jumpbar::-webkit-scrollbar{display:none}
+
+/* Narrow screens scroll sideways — six Russian labels will not fit.
+   The trailing padding keeps the last pill off the edge so it reads as
+   scrollable rather than cut off. */
+@media (max-width:860px){
+  .jumpbar{
+    overflow-x:auto;
+    flex-wrap:nowrap;
+    padding-right:28px;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .jumpbar::-webkit-scrollbar{display:none}
+  .jump{flex:0 0 auto}
+}
+
+/* Wide enough to hold them: wrap onto a second line instead of hiding
+   the last one off the right edge. */
+@media (min-width:861px){
+  .jumpbar{flex-wrap:wrap;overflow:visible}
+}
 
 .jump{
-  flex:0 0 auto;
   border:1.5px solid rgb(var(--mauve-rgb) / .45);
   background:rgb(var(--paper-rgb) / .92);
   color:var(--ink);
