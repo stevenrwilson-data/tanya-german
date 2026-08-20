@@ -807,32 +807,15 @@ h2{
 
 /* --- jump bar ----------------------------------------------- */
 
+/* Wraps at every width. A sideways-scrolling row looks broken rather
+   than scrollable when the last pill is sliced mid-word, and six long
+   Russian labels will not fit one phone row at any font size worth
+   reading. Two or three short rows beats one clipped one. */
 .jumpbar{
   position:sticky;top:0;z-index:20;
-  display:flex;gap:6px;
+  display:flex;flex-wrap:wrap;gap:6px;
   padding:10px 0;margin:6px 0 4px;
-  background:linear-gradient(var(--page) 68%, rgb(var(--paper-rgb) / 0));
-}
-
-/* Narrow screens scroll sideways — six Russian labels will not fit.
-   The trailing padding keeps the last pill off the edge so it reads as
-   scrollable rather than cut off. */
-@media (max-width:860px){
-  .jumpbar{
-    overflow-x:auto;
-    flex-wrap:nowrap;
-    padding-right:28px;
-    -webkit-overflow-scrolling:touch;
-    scrollbar-width:none;
-  }
-  .jumpbar::-webkit-scrollbar{display:none}
-  .jump{flex:0 0 auto}
-}
-
-/* Wide enough to hold them: wrap onto a second line instead of hiding
-   the last one off the right edge. */
-@media (min-width:861px){
-  .jumpbar{flex-wrap:wrap;overflow:visible}
+  background:linear-gradient(var(--page) 74%, rgb(var(--paper-rgb) / 0));
 }
 
 .jump{
@@ -848,7 +831,18 @@ h2{
 .jump:hover{border-color:var(--sand-deep)}
 .jump:active{background:var(--liver);color:var(--on-dark);border-color:var(--liver)}
 
-.hub-section{scroll-margin-top:64px}
+/* On a phone the labels are what make the row too wide, so drop the
+   descriptive half and keep the number — 'Раздел 1' instead of
+   'Раздел 1 · Предложения'. Set by app.js as a second span. */
+@media (max-width:560px){
+  .jump{font-size:.74rem;padding:10px 12px}
+  .jump-long{display:none}
+}
+@media (min-width:561px){
+  .jump-short{display:none}
+}
+
+.hub-section{scroll-margin-top:76px}
 
 /* --- topic filter ------------------------------------------- */
 
