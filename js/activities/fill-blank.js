@@ -55,12 +55,17 @@ GH.fillBlank = (function(){
 
   /* ---------- rounds ---------- */
 
-  function buildRounds(sentences){
-    var rounds = [];
-    sentences.forEach(function(s){
+  /* Rounds are interleaved by pass, not grouped by sentence: every
+     sentence's first blank, then every sentence's second, and so on.
+     Grouping them put the same sentence on screen three times in a
+     row. Stories pass ordered:true so their narrative sequence
+     survives; topic lists get each pass shuffled separately so the
+     three passes aren't in identical order. */
+  function buildRounds(sentences, ordered){
+    var perSentence = sentences.map(function(s){
       var tokens = GH.text.tokenize(s.de);
-      GH.text.blankUnits(s.de, s.blanks).forEach(function(u){
-        rounds.push({
+      return GH.text.blankUnits(s.de, s.blanks).map(function(u){
+        return {
           sentence:s,
           tokens:tokens,
           start:u.start,
@@ -68,9 +73,38 @@ GH.fillBlank = (function(){
           words:u.wordCount,
           answer:u.text.trim(),
           options:null
-        });
+        };
       });
     });
+
+    var most = 0, i;
+    for (i = 0; i < perSentence.length; i++){
+      if (perSentence[i].length > most) most = perSentence[i].length;
+    }
+
+    var rounds = [], pass, group;
+    for (pass = 0; pass < most; pass++){
+      group = [];
+      for (i = 0; i < perSentence.length; i++){
+        if (perSentence[i][pass]) group.push(perSentence[i][pass]);
+      }
+      if (!ordered) group = GH.text.shuffle(group);
+      rounds = rounds.concat(group);
+    }
+
+    /* A pass can end and the next begin on the same sentence when only
+       one sentence carries that many blanks. Nudge those apart. */
+    for (i = 1; i < rounds.length; i++){
+      if (rounds[i].sentence !== rounds[i - 1].sentence) continue;
+      var j;
+      for (j = i + 1; j < rounds.length; j++){
+        if (rounds[j].sentence !== rounds[i - 1].sentence &&
+            (j + 1 >= rounds.length || rounds[j + 1].sentence !== rounds[i].sentence)){
+          var tmp = rounds[i]; rounds[i] = rounds[j]; rounds[j] = tmp;
+          break;
+        }
+      }
+    }
     return rounds;
   }
 
@@ -280,8 +314,7 @@ GH.fillBlank = (function(){
     var again = el('button', 'btn btn-primary', t('again'));
     again.type = 'button';
     again.addEventListener('click', function(){
-      state.rounds.forEach(function(r){ r.options = null; });
-      state.rounds = GH.text.shuffle(state.rounds);
+      state.rounds = buildRounds(state.sentences, state.ordered);
       goTo(0);
     });
     var hub = el('button', 'btn btn-ghost', t('toHub'));
@@ -370,7 +403,9 @@ GH.fillBlank = (function(){
       title:config.title,
       subtitle:config.subtitle || '',
       cat:config.cat || null,
-      rounds:buildRounds(config.sentences),
+      sentences:config.sentences,
+      ordered:!!config.ordered,
+      rounds:buildRounds(config.sentences, !!config.ordered),
       i:0,
       mode:'choose',
       solved:false,
