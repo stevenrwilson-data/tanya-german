@@ -127,6 +127,24 @@ GH.fillBlank = (function(){
 
   /* ---------- speaking ---------- */
 
+  /* Auto-play is the German spoken BEFORE she answers. It is a crutch,
+     so it can be switched off; the sentence is still spoken after a
+     correct answer either way, and the Listen button always works.
+     Remembered between visits — a preference that resets every session
+     is no preference at all. Private browsing on iOS throws rather
+     than returning null, hence the try/catch. */
+  var AUTO_KEY = 'gh-autoplay';
+
+  function autoOn(){
+    try {
+      return window.localStorage.getItem(AUTO_KEY) !== 'off';
+    } catch (e){ return true; }
+  }
+
+  function setAuto(on){
+    try { window.localStorage.setItem(AUTO_KEY, on ? 'on' : 'off'); } catch (e){}
+  }
+
   function speakSentence(){
     var r = round();
     if (!r) return;
@@ -182,6 +200,16 @@ GH.fillBlank = (function(){
       speak.appendChild(el('span', null, state.solved ? t('listenAgain') : t('listen')));
       speak.addEventListener('click', speakSentence);
       tools.appendChild(speak);
+
+      var auto = el('button', 'autotoggle', t('autoPlay'));
+      auto.type = 'button';
+      auto.setAttribute('aria-pressed', autoOn() ? 'true' : 'false');
+      auto.setAttribute('title', t(autoOn() ? 'autoPlayOn' : 'autoPlayOff'));
+      auto.addEventListener('click', function(){
+        setAuto(!autoOn());
+        paint();
+      });
+      tools.appendChild(auto);
     }
 
     var modes = el('div', 'mode-toggle');
@@ -394,7 +422,7 @@ GH.fillBlank = (function(){
     state.typed = '';
     state.ruledOut = {};
     paint();
-    if (state.i < state.rounds.length) speakSentence();
+    if (state.i < state.rounds.length && autoOn()) speakSentence();
   }
 
   function mount(container, config){
