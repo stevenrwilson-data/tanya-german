@@ -1,430 +1,712 @@
-/* Vocab sets.
+/* ============================================================
+   VOCAB BANK — 278 words, each with two sentences.
 
-   A set is six words from one topic. Phase one tests the words; phase
-   two gives the sentences that use them. You have to get a word right
-   to clear it — a miss puts it back in the queue.
+   n   the image number, so the picture comes free
+   de  the German word, with its article where it has one
+   ru  Russian (missing above 70 for now — the translate mode
+       simply skips any entry with no ru)
+   en  English
+   cat which topic it belongs to
+   s   the two sentences, each in all three languages
+   ============================================================ */
 
-   Phase one has three question shapes, toggled by the buttons:
-     pic   see the image, pick the German
-     word  see the German, pick the image
-     mean  see the German, pick the Russian (or English)
+window.GH_VOCAB = [
+  { n:1, cat:'body', de:'der Kopf', en:'head', ru:'голова', rg:'F',
+    s:[{ de:'Mein Kopf tut weh.', en:'My head hurts.', ru:'У меня болит голова.' }, { de:'Ich berühre meinen Kopf.', en:'I touch my head.', ru:'Я трогаю свою голову.' }] },
+  { n:2, cat:'body', de:'die Augen', en:'eyes', ru:'глаза', rg:'PL', rgs:'M',
+    s:[{ de:'Ich habe blaue Augen.', en:'I have blue eyes.', ru:'У меня голубые глаза.' }, { de:'Meine Augen sind müde.', en:'My eyes are tired.', ru:'Мои глаза устали.' }] },
+  { n:3, cat:'body', de:'die Hände', en:'hands', ru:'кисти рук', rg:'PL', rgs:'F',
+    s:[{ de:'Ich wasche meine Hände.', en:'I wash my hands.', ru:'Я мою руки.' }, { de:'Meine Hände sind kalt.', en:'My hands are cold.', ru:'Мои руки холодные.' }] },
+  { n:4, cat:'body', de:'die Füße', en:'feet', ru:'ступни', rg:'PL', rgs:'F',
+    s:[{ de:'Meine Füße sind müde.', en:'My feet are tired.', ru:'Мои ноги устали.' }, { de:'Ich wasche meine Füße.', en:'I wash my feet.', ru:'Я мою ноги.' }] },
+  { n:5, cat:'body', de:'die Haare', en:'hair', ru:'волосы', rg:'PL', rgs:'M',
+    s:[{ de:'Meine Haare sind lang.', en:'My hair is long.', ru:'У меня длинные волосы.' }, { de:'Ich wasche meine Haare.', en:'I wash my hair.', ru:'Я мою волосы.' }] },
+  { n:6, cat:'body', de:'der Rücken', en:'back', ru:'спина', rg:'F',
+    s:[{ de:'Mein Rücken tut weh.', en:'My back hurts.', ru:'У меня болит спина.' }, { de:'Ich lege mich auf den Rücken.', en:'I lie on my back.', ru:'Я ложусь на спину.' }] },
+  { n:7, cat:'body', de:'der Bauch', en:'stomach', ru:'живот', rg:'M',
+    s:[{ de:'Mein Bauch tut weh.', en:'My stomach hurts.', ru:'У меня болит живот.' }, { de:'Ich berühre meinen Bauch.', en:'I touch my stomach.', ru:'Я трогаю свой живот.' }] },
+  { n:8, cat:'body', de:'das Gesicht', en:'face', ru:'лицо', rg:'N',
+    s:[{ de:'Ich wasche mein Gesicht.', en:'I wash my face.', ru:'Я мою лицо.' }, { de:'Mein Gesicht ist warm.', en:'My face is warm.', ru:'Моё лицо тёплое.' }] },
+  { n:9, cat:'body', de:'die Zähne', en:'teeth', ru:'зубы', rg:'PL', rgs:'M',
+    s:[{ de:'Ich putze meine Zähne.', en:'I brush my teeth.', ru:'Я чищу зубы.' }, { de:'Meine Zähne sind sauber.', en:'My teeth are clean.', ru:'Мои зубы чистые.' }] },
+  { n:10, cat:'body', de:'die Nase', en:'nose', ru:'нос', rg:'M',
+    s:[{ de:'Ich habe eine kleine Nase.', en:'I have a small nose.', ru:'У меня маленький нос.' }, { de:'Meine Nase ist kalt.', en:'My nose is cold.', ru:'Мой нос холодный.' }] },
+  { n:11, cat:'body', de:'die Haut', en:'skin', ru:'кожа', rg:'F',
+    s:[{ de:'Meine Haut ist trocken.', en:'My skin is dry.', ru:'Моя кожа сухая.' }, { de:'Diese Creme ist gut für meine Haut.', en:'This cream is good for my skin.', ru:'Этот крем хорош для моей кожи.' }] },
+  { n:12, cat:'body', de:'die Arme', en:'arms', ru:'руки', rg:'PL', rgs:'F',
+    s:[{ de:'Ich bewege meine Arme.', en:'I move my arms.', ru:'Я двигаю руками.' }, { de:'Meine Arme sind müde.', en:'My arms are tired.', ru:'Мои руки устали.' }] },
+  { n:13, cat:'body', de:'das Bein', en:'leg', ru:'нога', rg:'F',
+    s:[{ de:'Mein Bein tut weh.', en:'My leg hurts.', ru:'У меня болит нога.' }, { de:'Ich bewege mein Bein.', en:'I move my leg.', ru:'Я двигаю ногой.' }] },
+  { n:14, cat:'body', de:'die Finger', en:'fingers', ru:'пальцы рук', rg:'PL', rgs:'M',
+    s:[{ de:'Ich habe zehn Finger.', en:'I have ten fingers.', ru:'У меня десять пальцев.' }, { de:'Meine Finger sind kalt.', en:'My fingers are cold.', ru:'Мои пальцы холодные.' }] },
+  { n:15, cat:'body', de:'die Ohren', en:'ears', ru:'уши', rg:'PL', rgs:'N',
+    s:[{ de:'Meine Ohren sind kalt.', en:'My ears are cold.', ru:'Мои уши холодные.' }, { de:'Ich habe zwei Ohren.', en:'I have two ears.', ru:'У меня два уха.' }] },
+  { n:16, cat:'shopping', de:'die Jacke', en:'jacket', ru:'куртка', rg:'F',
+    s:[{ de:'Ich brauche eine neue Jacke.', en:'I need a new jacket.', ru:'Мне нужна новая куртка.' }, { de:'Meine Jacke ist warm.', en:'My jacket is warm.', ru:'Моя куртка тёплая.' }] },
+  { n:17, cat:'shopping', de:'die schwarze Jacke', en:'black jacket', ru:'чёрная куртка', rg:'F',
+    s:[{ de:'Sie trägt eine schwarze Jacke.', en:'She is wearing a black jacket.', ru:'Она носит чёрную куртку.' }, { de:'Die schwarze Jacke ist schön.', en:'The black jacket is beautiful.', ru:'Чёрная куртка красивая.' }] },
+  { n:18, cat:'shopping', de:'das Kleid', en:'dress', ru:'платье', rg:'N',
+    s:[{ de:'Ich möchte dieses Kleid.', en:'I would like this dress.', ru:'Я хочу это платье.' }, { de:'Das Kleid passt gut.', en:'The dress fits well.', ru:'Платье хорошо сидит.' }] },
+  { n:19, cat:'shopping', de:'die Schuhe', en:'shoes', ru:'обувь', rg:'F',
+    s:[{ de:'Ich suche neue Schuhe.', en:'I am looking for new shoes.', ru:'Я ищу новую обувь.' }, { de:'Diese Schuhe sind bequem.', en:'These shoes are comfortable.', ru:'Эти туфли удобные.' }] },
+  { n:20, cat:'shopping', de:'die Hose', en:'pants', ru:'брюки', rg:'PL',
+    s:[{ de:'Die Hose ist zu groß.', en:'The pants are too big.', ru:'Брюки слишком большие.' }, { de:'Ich brauche eine neue Hose.', en:'I need new pants.', ru:'Мне нужны новые брюки.' }] },
+  { n:21, cat:'shopping', de:'die Tasche', en:'bag', ru:'сумка', rg:'F',
+    s:[{ de:'Ich brauche eine Tasche.', en:'I need a bag.', ru:'Мне нужна сумка.' }, { de:'Meine Tasche ist auf dem Tisch.', en:'My bag is on the table.', ru:'Моя сумка на столе.' }] },
+  { n:22, cat:'shopping', de:'das Geschäft', en:'store', ru:'магазин', rg:'M',
+    s:[{ de:'Ich gehe in ein Geschäft.', en:'I am going into a store.', ru:'Я иду в магазин.' }, { de:'Das Geschäft ist heute offen.', en:'The store is open today.', ru:'Магазин сегодня открыт.' }] },
+  { n:23, cat:'shopping', de:'die Kasse', en:'checkout counter', ru:'касса', rg:'F',
+    s:[{ de:'Wo ist die Kasse?', en:'Where is the checkout?', ru:'Где касса?' }, { de:'Ich bezahle an der Kasse.', en:'I pay at the checkout.', ru:'Я плачу на кассе.' }] },
+  { n:24, cat:'shopping', de:'die Kreditkarte', en:'credit card', ru:'кредитная карта', rg:'F',
+    s:[{ de:'Ich habe eine Kreditkarte.', en:'I have a credit card.', ru:'У меня есть кредитная карта.' }, { de:'Ich bezahle mit meiner Kreditkarte.', en:'I pay with my credit card.', ru:'Я плачу кредитной картой.' }] },
+  { n:25, cat:'shopping', de:'das Größenetikett', en:'clothing size tag', ru:'бирка с размером одежды', rg:'F',
+    s:[{ de:'Ich sehe das Größenetikett.', en:'I see the size tag.', ru:'Я вижу ярлык с размером.' }, { de:'Die Größe steht auf dem Größenetikett.', en:'The size is on the size tag.', ru:'Размер написан на ярлыке.' }] },
+  { n:26, cat:'shopping', de:'ein Paar Schuhe', en:'pair of shoes', ru:'пара обуви', rg:'F',
+    s:[{ de:'Ich brauche ein Paar Schuhe.', en:'I need a pair of shoes.', ru:'Мне нужна пара обуви.' }, { de:'Dieses Paar Schuhe ist schön.', en:'This pair of shoes is beautiful.', ru:'Эта пара обуви красивая.' }] },
+  { n:27, cat:'shopping', de:'der Pullover', en:'sweater', ru:'свитер', rg:'M',
+    s:[{ de:'Mein Pullover ist weich.', en:'My sweater is soft.', ru:'Мой свитер мягкий.' }, { de:'Ich ziehe einen Pullover an.', en:'I put on a sweater.', ru:'Я надеваю свитер.' }] },
+  { n:28, cat:'shopping', de:'der warme Pullover', en:'warm sweater', ru:'тёплый свитер', rg:'M',
+    s:[{ de:'Ich trage einen warmen Pullover.', en:'I am wearing a warm sweater.', ru:'Я ношу тёплый свитер.' }, { de:'Der warme Pullover ist sehr bequem.', en:'The warm sweater is very comfortable.', ru:'Тёплый свитер очень удобный.' }] },
+  { n:29, cat:'shopping', de:'der Schal', en:'scarf', ru:'шарф', rg:'M',
+    s:[{ de:'Ich trage einen Schal.', en:'I am wearing a scarf.', ru:'Я ношу шарф.' }, { de:'Mein Schal ist rosa.', en:'My scarf is pink.', ru:'Мой шарф розовый.' }] },
+  { n:30, cat:'shopping', de:'der Lippenstift', en:'lipstick', ru:'губная помада', rg:'F',
+    s:[{ de:'Ich benutze Lippenstift.', en:'I use lipstick.', ru:'Я пользуюсь помадой.' }, { de:'Der Lippenstift ist neu.', en:'The lipstick is new.', ru:'Помада новая.' }] },
+  { n:31, cat:'beauty', de:'der rote Lippenstift', en:'red lipstick', ru:'красная губная помада', rg:'F',
+    s:[{ de:'Der rote Lippenstift ist schön.', en:'The red lipstick is beautiful.', ru:'Красная помада красивая.' }, { de:'Sie benutzt roten Lippenstift.', en:'She uses red lipstick.', ru:'Она пользуется красной помадой.' }] },
+  { n:32, cat:'beauty', de:'der Nagellack', en:'nail polish', ru:'лак для ногтей', rg:'M',
+    s:[{ de:'Ich benutze Nagellack.', en:'I use nail polish.', ru:'Я пользуюсь лаком для ногтей.' }, { de:'Der Nagellack ist auf dem Tisch.', en:'The nail polish is on the table.', ru:'Лак для ногтей на столе.' }] },
+  { n:33, cat:'beauty', de:'der rosa Nagellack', en:'pink nail polish', ru:'розовый лак для ногтей', rg:'M',
+    s:[{ de:'Ich mag rosa Nagellack.', en:'I like pink nail polish.', ru:'Мне нравится розовый лак для ногтей.' }, { de:'Der rosa Nagellack ist schön.', en:'The pink nail polish is beautiful.', ru:'Розовый лак красивый.' }] },
+  { n:34, cat:'beauty', de:'die Fingernägel', en:'fingernails', ru:'ногти на руках', rg:'PL', rgs:'M',
+    s:[{ de:'Meine Fingernägel sind kurz.', en:'My fingernails are short.', ru:'Мои ногти короткие.' }, { de:'Ich lackiere meine Fingernägel.', en:'I paint my fingernails.', ru:'Я крашу ногти.' }] },
+  { n:35, cat:'beauty', de:'die Haarbürste', en:'hairbrush', ru:'щётка для волос', rg:'F',
+    s:[{ de:'Ich brauche eine neue Haarbürste.', en:'I need a new hairbrush.', ru:'Мне нужна новая расчёска.' }, { de:'Meine Haarbürste liegt im Badezimmer.', en:'My hairbrush is in the bathroom.', ru:'Моя расчёска лежит в ванной.' }] },
+  { n:36, cat:'beauty', de:'die Gesichtscreme', en:'face cream', ru:'крем для лица', rg:'M',
+    s:[{ de:'Ich benutze Gesichtscreme.', en:'I use face cream.', ru:'Я пользуюсь кремом для лица.' }, { de:'Die Gesichtscreme riecht gut.', en:'The face cream smells good.', ru:'Крем для лица хорошо пахнет.' }] },
+  { n:37, cat:'beauty', de:'das Make-up', en:'makeup', ru:'макияж', rg:'M',
+    s:[{ de:'Ich trage heute Make-up.', en:'I am wearing makeup today.', ru:'Сегодня я накрашена.' }, { de:'Mein Make-up ist leicht.', en:'My makeup is light.', ru:'Мой макияж лёгкий.' }] },
+  { n:38, cat:'beauty', de:'die Mascara', en:'mascara', ru:'тушь для ресниц', rg:'F',
+    s:[{ de:'Ich benutze Mascara.', en:'I use mascara.', ru:'Я пользуюсь тушью.' }, { de:'Die Mascara ist schwarz.', en:'The mascara is black.', ru:'Тушь чёрная.' }] },
+  { n:39, cat:'beauty', de:'der Spiegel', en:'mirror', ru:'зеркало', rg:'N',
+    s:[{ de:'Ich brauche einen Spiegel.', en:'I need a mirror.', ru:'Мне нужно зеркало.' }, { de:'Ich sehe mich im Spiegel.', en:'I look at myself in the mirror.', ru:'Я смотрю на себя в зеркало.' }] },
+  { n:40, cat:'beauty', de:'das Parfüm', en:'perfume', ru:'духи', rg:'PL',
+    s:[{ de:'Mein Parfüm riecht schön.', en:'My perfume smells nice.', ru:'Мои духи хорошо пахнут.' }, { de:'Ich benutze heute Parfüm.', en:'I am using perfume today.', ru:'Сегодня я пользуюсь духами.' }] },
+  { n:41, cat:'beauty', de:'das Kosmetikgeschäft', en:'cosmetics store', ru:'магазин косметики', rg:'M',
+    s:[{ de:'Ich gehe in ein Kosmetikgeschäft.', en:'I am going into a cosmetics store.', ru:'Я иду в магазин косметики.' }, { de:'Das Kosmetikgeschäft ist groß.', en:'The cosmetics store is big.', ru:'Магазин косметики большой.' }] },
+  { n:42, cat:'beauty', de:'der Cremetiegel', en:'cream container', ru:'баночка с кремом', rg:'F',
+    s:[{ de:'Der Cremetiegel ist klein.', en:'The cream jar is small.', ru:'Баночка с кремом маленькая.' }, { de:'Ich öffne den Cremetiegel.', en:'I open the cream jar.', ru:'Я открываю баночку с кремом.' }] },
+  { n:43, cat:'beauty', de:'die kleine Packung', en:'small package', ru:'маленькая упаковка', rg:'F',
+    s:[{ de:'Ich kaufe die kleine Packung.', en:'I buy the small package.', ru:'Я покупаю маленькую упаковку.' }, { de:'Die kleine Packung ist billiger.', en:'The small package is cheaper.', ru:'Маленькая упаковка дешевле.' }] },
+  { n:44, cat:'beauty', de:'das Wasser', en:'water', ru:'вода', rg:'F',
+    s:[{ de:'Ich trinke viel Wasser.', en:'I drink a lot of water.', ru:'Я пью много воды.' }, { de:'Das Wasser ist kalt.', en:'The water is cold.', ru:'Вода холодная.' }] },
+  { n:45, cat:'body', de:'das Glas Wasser', en:'glass of water', ru:'стакан воды', rg:'M',
+    s:[{ de:'Ich trinke ein Glas Wasser.', en:'I drink a glass of water.', ru:'Я пью стакан воды.' }, { de:'Das Glas Wasser steht auf dem Tisch.', en:'The glass of water is on the table.', ru:'Стакан воды стоит на столе.' }] },
+  { n:46, cat:'food', de:'das Brot', en:'bread', ru:'хлеб', rg:'M',
+    s:[{ de:'Ich esse gern Brot.', en:'I like eating bread.', ru:'Я люблю есть хлеб.' }, { de:'Das Brot ist frisch.', en:'The bread is fresh.', ru:'Хлеб свежий.' }] },
+  { n:47, cat:'food', de:'der Kaffee', en:'coffee', ru:'кофе', rg:'M',
+    s:[{ de:'Der Kaffee ist heiß.', en:'The coffee is hot.', ru:'Кофе горячий.' }, { de:'Ich trinke morgens Kaffee.', en:'I drink coffee in the morning.', ru:'Я пью кофе по утрам.' }] },
+  { n:48, cat:'food', de:'die Suppe', en:'soup', ru:'суп', rg:'M',
+    s:[{ de:'Die Suppe ist lecker.', en:'The soup is tasty.', ru:'Суп вкусный.' }, { de:'Ich esse eine warme Suppe.', en:'I eat a warm soup.', ru:'Я ем тёплый суп.' }] },
+  { n:49, cat:'food', de:'das Gemüse', en:'vegetables', ru:'овощи', rg:'PL', rgs:'M',
+    s:[{ de:'Ich esse gern Gemüse.', en:'I like eating vegetables.', ru:'Я люблю есть овощи.' }, { de:'Das Gemüse ist frisch.', en:'The vegetables are fresh.', ru:'Овощи свежие.' }] },
+  { n:50, cat:'food', de:'der Apfel', en:'apple', ru:'яблоко', rg:'N',
+    s:[{ de:'Ich esse einen Apfel.', en:'I am eating an apple.', ru:'Я ем яблоко.' }, { de:'Der Apfel ist rot.', en:'The apple is red.', ru:'Яблоко красное.' }] },
+  { n:51, cat:'food', de:'die Eier', en:'eggs', ru:'яйца', rg:'PL', rgs:'N',
+    s:[{ de:'Ich esse zwei Eier.', en:'I eat two eggs.', ru:'Я ем два яйца.' }, { de:'Die Eier sind zum Frühstück.', en:'The eggs are for breakfast.', ru:'Яйца на завтрак.' }] },
+  { n:52, cat:'food', de:'das Frühstück', en:'breakfast', ru:'завтрак', rg:'M',
+    s:[{ de:'Mein Frühstück ist einfach.', en:'My breakfast is simple.', ru:'Мой завтрак простой.' }, { de:'Ich mache jeden Morgen Frühstück.', en:'I make breakfast every morning.', ru:'Я готовлю завтрак каждое утро.' }] },
+  { n:53, cat:'food', de:'der Tee', en:'tea', ru:'чай', rg:'M',
+    s:[{ de:'Ich trinke gern Tee.', en:'I like drinking tea.', ru:'Я люблю пить чай.' }, { de:'Der Tee ist heiß.', en:'The tea is hot.', ru:'Чай горячий.' }] },
+  { n:54, cat:'food', de:'die Milch', en:'milk', ru:'молоко', rg:'N',
+    s:[{ de:'Ich trinke Milch.', en:'I drink milk.', ru:'Я пью молоко.' }, { de:'Die Milch ist kalt.', en:'The milk is cold.', ru:'Молоко холодное.' }] },
+  { n:55, cat:'food', de:'der Salat', en:'salad', ru:'салат', rg:'M',
+    s:[{ de:'Ich möchte einen Salat.', en:'I would like a salad.', ru:'Я хочу салат.' }, { de:'Der Salat ist frisch.', en:'The salad is fresh.', ru:'Салат свежий.' }] },
+  { n:56, cat:'food', de:'die Kartoffeln', en:'potatoes', ru:'картофель', rg:'M',
+    s:[{ de:'Wir brauchen Kartoffeln.', en:'We need potatoes.', ru:'Нам нужна картошка.' }, { de:'Ich schneide die Kartoffeln.', en:'I cut the potatoes.', ru:'Я режу картошку.' }] },
+  { n:57, cat:'food', de:'die Tomate', en:'tomato', ru:'помидор', rg:'M',
+    s:[{ de:'Ich schneide eine Tomate.', en:'I cut a tomato.', ru:'Я режу помидор.' }, { de:'Die Tomate ist rot.', en:'The tomato is red.', ru:'Помидор красный.' }] },
+  { n:58, cat:'food', de:'das Fleisch', en:'meat', ru:'мясо', rg:'N',
+    s:[{ de:'Ich esse kein Fleisch.', en:'I do not eat meat.', ru:'Я не ем мясо.' }, { de:'Das Fleisch ist auf dem Teller.', en:'The meat is on the plate.', ru:'Мясо на тарелке.' }] },
+  { n:59, cat:'food', de:'die Schokolade', en:'chocolate', ru:'шоколад', rg:'M',
+    s:[{ de:'Die Schokolade ist süß.', en:'The chocolate is sweet.', ru:'Шоколад сладкий.' }, { de:'Ich esse gern Schokolade.', en:'I like eating chocolate.', ru:'Я люблю есть шоколад.' }] },
+  { n:60, cat:'food', de:'die Zitrone', en:'lemon', ru:'лимон', rg:'M',
+    s:[{ de:'Die Zitrone ist sauer.', en:'The lemon is sour.', ru:'Лимон кислый.' }, { de:'Ich schneide eine Zitrone.', en:'I cut a lemon.', ru:'Я режу лимон.' }] },
+  { n:61, cat:'food', de:'die Karotten', en:'carrots', ru:'морковь', rg:'F',
+    s:[{ de:'Ich schneide die Karotten.', en:'I cut the carrots.', ru:'Я режу морковь.' }, { de:'Die Karotten sind frisch.', en:'The carrots are fresh.', ru:'Морковь свежая.' }] },
+  { n:62, cat:'food', de:'die Zwiebeln', en:'onions', ru:'репчатый лук', rg:'M',
+    s:[{ de:'Wir brauchen zwei Zwiebeln.', en:'We need two onions.', ru:'Нам нужны две луковицы.' }, { de:'Ich schneide die Zwiebeln.', en:'I cut the onions.', ru:'Я режу лук.' }] },
+  { n:63, cat:'food', de:'der Kochtopf', en:'cooking pot', ru:'кастрюля', rg:'F',
+    s:[{ de:'Der Kochtopf steht auf dem Herd.', en:'The cooking pot is on the stove.', ru:'Кастрюля стоит на плите.' }, { de:'Ich gebe das Gemüse in den Kochtopf.', en:'I put the vegetables into the pot.', ru:'Я кладу овощи в кастрюлю.' }] },
+  { n:64, cat:'food', de:'das Abendessen', en:'dinner', ru:'ужин', rg:'M',
+    s:[{ de:'Das Abendessen ist fertig.', en:'Dinner is ready.', ru:'Ужин готов.' }, { de:'Wir essen zusammen Abendessen.', en:'We eat dinner together.', ru:'Мы ужинаем вместе.' }] },
+  { n:65, cat:'home', de:'das Zuhause', en:'home', ru:'дом', rg:'M',
+    s:[{ de:'Mein Zuhause ist ruhig.', en:'My home is quiet.', ru:'Мой дом тихий.' }, { de:'Ich mag mein Zuhause.', en:'I like my home.', ru:'Мне нравится мой дом.' }] },
+  { n:66, cat:'home', de:'die Wohnung', en:'apartment', ru:'квартира', rg:'F',
+    s:[{ de:'Meine Wohnung ist warm.', en:'My apartment is warm.', ru:'Моя квартира тёплая.' }, { de:'Die Wohnung hat eine kleine Küche.', en:'The apartment has a small kitchen.', ru:'В квартире маленькая кухня.' }] },
+  { n:67, cat:'home', de:'das Bett', en:'bed', ru:'кровать', rg:'F',
+    s:[{ de:'Ich mache mein Bett.', en:'I make my bed.', ru:'Я застилаю кровать.' }, { de:'Mein Handy liegt auf dem Bett.', en:'My phone is on the bed.', ru:'Мой телефон лежит на кровати.' }] },
+  { n:68, cat:'home', de:'das Fenster', en:'window', ru:'окно', rg:'N',
+    s:[{ de:'Ich öffne das Fenster.', en:'I open the window.', ru:'Я открываю окно.' }, { de:'Das Fenster ist offen.', en:'The window is open.', ru:'Окно открыто.' }] },
+  { n:69, cat:'home', de:'das Licht', en:'light', ru:'свет', rg:'M',
+    s:[{ de:'Ich mache das Licht an.', en:'I turn on the light.', ru:'Я включаю свет.' }, { de:'Das Licht ist sehr hell.', en:'The light is very bright.', ru:'Свет очень яркий.' }] },
+  { n:70, cat:'home', de:'das Zimmer', en:'room', ru:'комната', rg:'F',
+    s:[{ de:'Ich räume mein Zimmer auf.', en:'I tidy my room.', ru:'Я убираю свою комнату.' }, { de:'Mein Zimmer ist sauber.', en:'My room is clean.', ru:'Моя комната чистая.' }] },
+  { n:71, cat:'home', de:'die Wäsche', en:'laundry', ru:'бельё', rg:'N',
+    s:[{ de:'Ich wasche die Wäsche.', en:'I wash the laundry.', ru:'Я стираю бельё.' }, { de:'Die Wäsche ist sauber.', en:'The laundry is clean.', ru:'Бельё чистое.' }] },
+  { n:72, cat:'home', de:'die Küche', en:'kitchen', ru:'кухня', rg:'F',
+    s:[{ de:'Ich putze die Küche.', en:'I clean the kitchen.', ru:'Я убираю кухню.' }, { de:'Meine Küche ist klein.', en:'My kitchen is small.', ru:'Моя кухня маленькая.' }] },
+  { n:73, cat:'home', de:'das Sofa', en:'sofa', ru:'диван', rg:'M',
+    s:[{ de:'Ich sitze auf dem Sofa.', en:'I sit on the sofa.', ru:'Я сижу на диване.' }, { de:'Das Sofa ist bequem.', en:'The sofa is comfortable.', ru:'Диван удобный.' }] },
+  { n:74, cat:'home', de:'die Tür', en:'door', ru:'дверь', rg:'F',
+    s:[{ de:'Ich öffne die Tür.', en:'I open the door.', ru:'Я открываю дверь.' }, { de:'Die Tür ist geschlossen.', en:'The door is closed.', ru:'Дверь закрыта.' }] },
+  { n:75, cat:'home', de:'der Tisch', en:'table', ru:'стол', rg:'M',
+    s:[{ de:'Das Essen steht auf dem Tisch.', en:'The food is on the table.', ru:'Еда стоит на столе.' }, { de:'Ich sitze am Tisch.', en:'I sit at the table.', ru:'Я сижу за столом.' }] },
+  { n:76, cat:'home', de:'das Handy', en:'phone', ru:'телефон', rg:'M',
+    s:[{ de:'Mein Handy liegt auf dem Bett.', en:'My phone is on the bed.', ru:'Мой телефон лежит на кровати.' }, { de:'Ich benutze mein Handy.', en:'I use my phone.', ru:'Я пользуюсь телефоном.' }] },
+  { n:77, cat:'home', de:'der Fernseher', en:'television', ru:'телевизор', rg:'M',
+    s:[{ de:'Der Fernseher ist im Wohnzimmer.', en:'The television is in the living room.', ru:'Телевизор стоит в гостиной.' }, { de:'Ich schalte den Fernseher an.', en:'I turn on the television.', ru:'Я включаю телевизор.' }] },
+  { n:78, cat:'home', de:'ein Pullover auf dem Bett', en:'sweater lying on bed', ru:'свитер на кровати', rg:'M',
+    s:[{ de:'Der Pullover liegt auf dem Bett.', en:'The sweater is lying on the bed.', ru:'Свитер лежит на кровати.' }, { de:'Ich sehe einen Pullover auf dem Bett.', en:'I see a sweater on the bed.', ru:'Я вижу свитер на кровати.' }] },
+  { n:79, cat:'home', de:'ein Handy unter dem Pullover', en:'phone under sweater', ru:'телефон под свитером', rg:'M',
+    s:[{ de:'Das Handy liegt unter dem Pullover.', en:'The phone is under the sweater.', ru:'Телефон лежит под свитером.' }, { de:'Ich finde mein Handy unter dem Pullover.', en:'I find my phone under the sweater.', ru:'Я нахожу свой телефон под свитером.' }] },
+  { n:80, cat:'family', de:'der Sohn', en:'son', ru:'сын', rg:'M',
+    s:[{ de:'Ich habe einen Sohn.', en:'I have a son.', ru:'У меня есть сын.' }, { de:'Mein Sohn geht zur Schule.', en:'My son goes to school.', ru:'Мой сын ходит в школу.' }] },
+  { n:81, cat:'family', de:'die Mutter', en:'mother', ru:'мама', rg:'F',
+    s:[{ de:'Meine Mutter wohnt weit weg.', en:'My mother lives far away.', ru:'Моя мама живёт далеко.' }, { de:'Ich rufe meine Mutter an.', en:'I call my mother.', ru:'Я звоню маме.' }] },
+  { n:82, cat:'family', de:'der Vater', en:'father', ru:'папа', rg:'M',
+    s:[{ de:'Mein Vater arbeitet heute.', en:'My father is working today.', ru:'Мой папа сегодня работает.' }, { de:'Ich spreche mit meinem Vater.', en:'I talk to my father.', ru:'Я разговариваю с папой.' }] },
+  { n:83, cat:'family', de:'die Schwester', en:'sister', ru:'сестра', rg:'F',
+    s:[{ de:'Ich habe eine Schwester.', en:'I have a sister.', ru:'У меня есть сестра.' }, { de:'Meine Schwester ist jünger als ich.', en:'My sister is younger than me.', ru:'Моя сестра младше меня.' }] },
+  { n:84, cat:'family', de:'der Bruder', en:'brother', ru:'брат', rg:'M',
+    s:[{ de:'Ich habe einen Bruder.', en:'I have a brother.', ru:'У меня есть брат.' }, { de:'Mein Bruder ist älter als ich.', en:'My brother is older than me.', ru:'Мой брат старше меня.' }] },
+  { n:85, cat:'family', de:'die Eltern', en:'parents', ru:'родители', rg:'PL',
+    s:[{ de:'Meine Eltern sind zu Hause.', en:'My parents are at home.', ru:'Мои родители дома.' }, { de:'Ich besuche meine Eltern.', en:'I visit my parents.', ru:'Я навещаю родителей.' }] },
+  { n:86, cat:'family', de:'die Familie', en:'family', ru:'семья', rg:'F',
+    s:[{ de:'Meine Familie ist wichtig für mich.', en:'My family is important to me.', ru:'Моя семья важна для меня.' }, { de:'Ich liebe meine Familie.', en:'I love my family.', ru:'Я люблю свою семью.' }] },
+  { n:87, cat:'family', de:'das Kind', en:'child', ru:'ребёнок', rg:'M',
+    s:[{ de:'Das Kind spielt draußen.', en:'The child is playing outside.', ru:'Ребёнок играет на улице.' }, { de:'Das Kind geht zur Schule.', en:'The child goes to school.', ru:'Ребёнок ходит в школу.' }] },
+  { n:88, cat:'family', de:'die Frau', en:'woman', ru:'женщина', rg:'F',
+    s:[{ de:'Die Frau trinkt Kaffee.', en:'The woman is drinking coffee.', ru:'Женщина пьёт кофе.' }, { de:'Die Frau geht einkaufen.', en:'The woman is going shopping.', ru:'Женщина идёт за покупками.' }] },
+  { n:89, cat:'family', de:'der Junge', en:'boy', ru:'мальчик', rg:'M',
+    s:[{ de:'Der Junge geht zur Schule.', en:'The boy goes to school.', ru:'Мальчик ходит в школу.' }, { de:'Der Junge macht seine Hausaufgaben.', en:'The boy is doing his homework.', ru:'Мальчик делает домашнее задание.' }] },
+  { n:90, cat:'family', de:'die Schule', en:'school', ru:'школа', rg:'F',
+    s:[{ de:'Mein Sohn ist in der Schule.', en:'My son is at school.', ru:'Мой сын в школе.' }, { de:'Die Schule ist nicht weit.', en:'The school is not far.', ru:'Школа недалеко.' }] },
+  { n:91, cat:'family', de:'die Hausaufgaben', en:'homework', ru:'домашнее задание', rg:'N',
+    s:[{ de:'Er macht seine Hausaufgaben.', en:'He is doing his homework.', ru:'Он делает домашнее задание.' }, { de:'Die Hausaufgaben sind einfach.', en:'The homework is easy.', ru:'Домашнее задание простое.' }] },
+  { n:92, cat:'family', de:'der Schulrucksack', en:'school bag', ru:'школьный рюкзак', rg:'M',
+    s:[{ de:'Mein Sohn hat einen Schulrucksack.', en:'My son has a school bag.', ru:'У моего сына есть школьный рюкзак.' }, { de:'Der Schulrucksack ist blau.', en:'The school bag is blue.', ru:'Школьный рюкзак синий.' }] },
+  { n:93, cat:'weather', de:'die Sonne', en:'sun', ru:'солнце', rg:'N',
+    s:[{ de:'Die Sonne scheint heute.', en:'The sun is shining today.', ru:'Сегодня светит солнце.' }, { de:'Ich mag die Sonne.', en:'I like the sun.', ru:'Мне нравится солнце.' }] },
+  { n:94, cat:'weather', de:'der Regen', en:'rain', ru:'дождь', rg:'M',
+    s:[{ de:'Der Regen ist stark.', en:'The rain is heavy.', ru:'Дождь сильный.' }, { de:'Ich gehe nicht gern im Regen spazieren.', en:'I do not like walking in the rain.', ru:'Я не люблю гулять под дождём.' }] },
+  { n:95, cat:'weather', de:'der Schnee', en:'snow', ru:'снег', rg:'M',
+    s:[{ de:'Der Schnee ist weiß.', en:'The snow is white.', ru:'Снег белый.' }, { de:'Die Kinder spielen im Schnee.', en:'The children are playing in the snow.', ru:'Дети играют в снегу.' }] },
+  { n:96, cat:'weather', de:'der blaue Himmel', en:'blue sky', ru:'голубое небо', rg:'N',
+    s:[{ de:'Der Himmel ist blau.', en:'The sky is blue.', ru:'Небо голубое.' }, { de:'Ich sehe den blauen Himmel.', en:'I see the blue sky.', ru:'Я вижу голубое небо.' }] },
+  { n:97, cat:'weather', de:'der graue Himmel', en:'gray sky', ru:'серое небо', rg:'N',
+    s:[{ de:'Der Himmel ist grau.', en:'The sky is gray.', ru:'Небо серое.' }, { de:'Der graue Himmel sieht dunkel aus.', en:'The gray sky looks dark.', ru:'Серое небо выглядит тёмным.' }] },
+  { n:98, cat:'weather', de:'die Wolken', en:'clouds', ru:'облака', rg:'PL', rgs:'N',
+    s:[{ de:'Heute gibt es viele Wolken.', en:'There are many clouds today.', ru:'Сегодня много облаков.' }, { de:'Die Wolken sind grau.', en:'The clouds are gray.', ru:'Облака серые.' }] },
+  { n:99, cat:'weather', de:'der Wind', en:'wind', ru:'ветер', rg:'M',
+    s:[{ de:'Der Wind ist stark.', en:'The wind is strong.', ru:'Ветер сильный.' }, { de:'Der Wind ist heute kalt.', en:'The wind is cold today.', ru:'Сегодня ветер холодный.' }] },
+  { n:100, cat:'weather', de:'der Regenschirm', en:'umbrella', ru:'зонт', rg:'M',
+    s:[{ de:'Ich nehme einen Regenschirm mit.', en:'I am taking an umbrella with me.', ru:'Я беру с собой зонт.' }, { de:'Mein Regenschirm ist schwarz.', en:'My umbrella is black.', ru:'Мой зонт чёрный.' }] },
+  { n:101, cat:'weather', de:'das kalte Wetter', en:'cold weather', ru:'холодная погода', rg:'F',
+    s:[{ de:'Ich mag das kalte Wetter nicht.', en:'I do not like cold weather.', ru:'Я не люблю холодную погоду.' }, { de:'Bei kaltem Wetter trage ich eine Jacke.', en:'In cold weather I wear a jacket.', ru:'В холодную погоду я ношу куртку.' }] },
+  { n:102, cat:'weather', de:'das sonnige Wetter', en:'sunny weather', ru:'солнечная погода', rg:'F',
+    s:[{ de:'Ich mag sonniges Wetter.', en:'I like sunny weather.', ru:'Мне нравится солнечная погода.' }, { de:'Bei sonnigem Wetter gehe ich spazieren.', en:'In sunny weather I go for a walk.', ru:'В солнечную погоду я гуляю.' }] },
+  { n:103, cat:'weather', de:'das regnerische Wetter', en:'rainy weather', ru:'дождливая погода', rg:'F',
+    s:[{ de:'Das regnerische Wetter ist nicht schön.', en:'Rainy weather is not nice.', ru:'Дождливая погода нехорошая.' }, { de:'Bei regnerischem Wetter brauche ich einen Regenschirm.', en:'In rainy weather I need an umbrella.', ru:'В дождливую погоду мне нужен зонт.' }] },
+  { n:104, cat:'weather', de:'das Schneewetter', en:'snowy weather', ru:'снежная погода', rg:'F',
+    s:[{ de:'Im Winter gibt es oft Schneewetter.', en:'In winter there is often snowy weather.', ru:'Зимой часто бывает снежная погода.' }, { de:'Bei Schneewetter ist es kalt.', en:'In snowy weather it is cold.', ru:'В снежную погоду холодно.' }] },
+  { n:105, cat:'travel', de:'der Bus', en:'bus', ru:'автобус', rg:'M',
+    s:[{ de:'Der Bus kommt um neun Uhr.', en:'The bus comes at nine o\'clock.', ru:'Автобус приходит в девять часов.' }, { de:'Ich fahre mit dem Bus.', en:'I travel by bus.', ru:'Я езжу на автобусе.' }] },
+  { n:106, cat:'travel', de:'der Zug', en:'train', ru:'поезд', rg:'M',
+    s:[{ de:'Der Zug kommt um zehn Uhr.', en:'The train comes at ten o\'clock.', ru:'Поезд приходит в десять часов.' }, { de:'Ich fahre mit dem Zug.', en:'I travel by train.', ru:'Я езжу на поезде.' }] },
+  { n:107, cat:'travel', de:'die Bushaltestelle', en:'bus stop', ru:'автобусная остановка', rg:'F',
+    s:[{ de:'Wo ist die Bushaltestelle?', en:'Where is the bus stop?', ru:'Где автобусная остановка?' }, { de:'Ich warte an der Bushaltestelle.', en:'I wait at the bus stop.', ru:'Я жду на автобусной остановке.' }] },
+  { n:108, cat:'travel', de:'der Bahnhof', en:'train station', ru:'вокзал', rg:'M',
+    s:[{ de:'Wo ist der Bahnhof?', en:'Where is the train station?', ru:'Где вокзал?' }, { de:'Ich fahre zum Bahnhof.', en:'I am going to the train station.', ru:'Я еду на вокзал.' }] },
+  { n:109, cat:'travel', de:'die Fahrkarte', en:'ticket', ru:'билет', rg:'M',
+    s:[{ de:'Ich brauche eine Fahrkarte.', en:'I need a ticket.', ru:'Мне нужен билет.' }, { de:'Ich kaufe eine Fahrkarte am Bahnhof.', en:'I buy a ticket at the train station.', ru:'Я покупаю билет на вокзале.' }] },
+  { n:110, cat:'travel', de:'das Stadtzentrum', en:'city center', ru:'центр города', rg:'M',
+    s:[{ de:'Ich fahre ins Stadtzentrum.', en:'I am going to the city center.', ru:'Я еду в центр города.' }, { de:'Das Stadtzentrum ist sehr groß.', en:'The city center is very big.', ru:'Центр города очень большой.' }] },
+  { n:111, cat:'travel', de:'der Koffer', en:'suitcase', ru:'чемодан', rg:'M',
+    s:[{ de:'Mein Koffer ist schwer.', en:'My suitcase is heavy.', ru:'Мой чемодан тяжёлый.' }, { de:'Ich nehme meinen Koffer mit.', en:'I am taking my suitcase with me.', ru:'Я беру с собой чемодан.' }] },
+  { n:112, cat:'travel', de:'der kleine Koffer', en:'small suitcase', ru:'маленький чемодан', rg:'M',
+    s:[{ de:'Ich habe einen kleinen Koffer.', en:'I have a small suitcase.', ru:'У меня маленький чемодан.' }, { de:'Der kleine Koffer ist leicht.', en:'The small suitcase is light.', ru:'Маленький чемодан лёгкий.' }] },
+  { n:113, cat:'travel', de:'das Zugfenster', en:'train window', ru:'окно поезда', rg:'N',
+    s:[{ de:'Ich sitze am Zugfenster.', en:'I sit by the train window.', ru:'Я сижу у окна в поезде.' }, { de:'Ich schaue aus dem Zugfenster.', en:'I look out of the train window.', ru:'Я смотрю в окно поезда.' }] },
+  { n:114, cat:'travel', de:'der Sitzplatz', en:'seat', ru:'место', rg:'N',
+    s:[{ de:'Ich finde einen Sitzplatz.', en:'I find a seat.', ru:'Я нахожу место.' }, { de:'Mein Sitzplatz ist am Fenster.', en:'My seat is by the window.', ru:'Моё место у окна.' }] },
+  { n:115, cat:'travel', de:'zwei Fahrkarten', en:'two tickets', ru:'два билета', rg:'PL',
+    s:[{ de:'Ich habe zwei Fahrkarten.', en:'I have two tickets.', ru:'У меня два билета.' }, { de:'Wir brauchen zwei Fahrkarten.', en:'We need two tickets.', ru:'Нам нужны два билета.' }] },
+  { n:116, cat:'body', de:'müde', en:'tired', ru:'',
+    s:[{ de:'Ich bin heute müde.', en:'I am tired today.', ru:'Я сегодня устала.' }, { de:'Nach der Arbeit bin ich müde.', en:'After work I am tired.', ru:'После работы я устаю.' }] },
+  { n:117, cat:'body', de:'sehr müde', en:'very tired', ru:'',
+    s:[{ de:'Ich bin heute sehr müde.', en:'I am very tired today.', ru:'Я сегодня очень устала.' }, { de:'Am Abend ist sie sehr müde.', en:'In the evening she is very tired.', ru:'Вечером она очень устала.' }] },
+  { n:118, cat:'family', de:'glücklich', en:'happy', ru:'',
+    s:[{ de:'Ich bin heute glücklich.', en:'I am happy today.', ru:'Я сегодня счастлива.' }, { de:'Sie ist sehr glücklich.', en:'She is very happy.', ru:'Она очень счастлива.' }] },
+  { n:119, cat:'body', de:'sich gut fühlen', en:'feeling good', ru:'',
+    s:[{ de:'Ich fühle mich gut.', en:'I feel good.', ru:'Я чувствую себя хорошо.' }, { de:'Heute fühlt sie sich gut.', en:'Today she feels good.', ru:'Сегодня она чувствует себя хорошо.' }] },
+  { n:120, cat:'body', de:'sich besser fühlen', en:'feeling better', ru:'',
+    s:[{ de:'Ich fühle mich heute besser.', en:'I feel better today.', ru:'Сегодня я чувствую себя лучше.' }, { de:'Nach dem Schlafen fühlt sie sich besser.', en:'After sleeping she feels better.', ru:'После сна она чувствует себя лучше.' }] },
+  { n:121, cat:'food', de:'hungrig', en:'hungry', ru:'',
+    s:[{ de:'Ich bin hungrig.', en:'I am hungry.', ru:'Я голодна.' }, { de:'Am Morgen bin ich oft hungrig.', en:'In the morning I am often hungry.', ru:'Утром я часто голодна.' }] },
+  { n:122, cat:'food', de:'satt', en:'full', ru:'',
+    s:[{ de:'Ich bin satt.', en:'I am full.', ru:'Я сыта.' }, { de:'Nach dem Abendessen bin ich satt.', en:'After dinner I am full.', ru:'После ужина я сыта.' }] },
+  { n:123, cat:'weather', de:'kalt', en:'cold', ru:'',
+    s:[{ de:'Mir ist kalt.', en:'I am cold.', ru:'Мне холодно.' }, { de:'Am Abend ist mir oft kalt.', en:'In the evening I am often cold.', ru:'Вечером мне часто холодно.' }] },
+  { n:124, cat:'body', de:'kalte Hände', en:'hands feeling cold', ru:'',
+    s:[{ de:'Meine Hände sind kalt.', en:'My hands are cold.', ru:'Мои руки холодные.' }, { de:'Im Winter habe ich oft kalte Hände.', en:'In winter I often have cold hands.', ru:'Зимой у меня часто холодные руки.' }] },
+  { n:125, cat:'body', de:'müde Füße', en:'feet feeling tired', ru:'',
+    s:[{ de:'Meine Füße sind müde.', en:'My feet are tired.', ru:'Мои ноги устали.' }, { de:'Nach dem Spaziergang habe ich müde Füße.', en:'After the walk I have tired feet.', ru:'После прогулки у меня устали ноги.' }] },
+  { n:126, cat:'body', de:'müde Augen', en:'eyes feeling tired', ru:'',
+    s:[{ de:'Meine Augen sind müde.', en:'My eyes are tired.', ru:'Мои глаза устали.' }, { de:'Am Abend habe ich müde Augen.', en:'In the evening I have tired eyes.', ru:'Вечером у меня устают глаза.' }] },
+  { n:127, cat:'body', de:'Rückenschmerzen', en:'back pain', ru:'',
+    s:[{ de:'Ich habe Rückenschmerzen.', en:'I have back pain.', ru:'У меня болит спина.' }, { de:'Wegen der Rückenschmerzen ruhe ich mich aus.', en:'Because of the back pain I rest.', ru:'Из-за боли в спине я отдыхаю.' }] },
+  { n:128, cat:'body', de:'Kopfschmerzen', en:'headache', ru:'',
+    s:[{ de:'Ich habe Kopfschmerzen.', en:'I have a headache.', ru:'У меня болит голова.' }, { de:'Wegen der Kopfschmerzen möchte ich schlafen.', en:'Because of the headache I want to sleep.', ru:'Из-за головной боли я хочу спать.' }] },
+  { n:129, cat:'body', de:'Bauchschmerzen', en:'stomachache', ru:'',
+    s:[{ de:'Ich habe Bauchschmerzen.', en:'I have a stomachache.', ru:'У меня болит живот.' }, { de:'Wegen der Bauchschmerzen esse ich nichts.', en:'Because of the stomachache I do not eat anything.', ru:'Из-за боли в животе я ничего не ем.' }] },
+  { n:130, cat:'body', de:'Beinschmerzen', en:'leg pain', ru:'',
+    s:[{ de:'Ich habe Beinschmerzen.', en:'I have leg pain.', ru:'У меня болит нога.' }, { de:'Wegen der Beinschmerzen sitze ich heute viel.', en:'Because of the leg pain I sit a lot today.', ru:'Из-за боли в ноге я сегодня много сижу.' }] },
+  { n:131, cat:'body', de:'trockene Haut', en:'dry skin', ru:'',
+    s:[{ de:'Ich habe trockene Haut.', en:'I have dry skin.', ru:'У меня сухая кожа.' }, { de:'Gesichtscreme hilft bei trockener Haut.', en:'Face cream helps with dry skin.', ru:'Крем для лица помогает при сухой коже.' }] },
+  { n:132, cat:'beauty', de:'weiche Haut', en:'soft skin', ru:'',
+    s:[{ de:'Meine Haut ist weich.', en:'My skin is soft.', ru:'Моя кожа мягкая.' }, { de:'Die Creme macht meine Haut weich.', en:'The cream makes my skin soft.', ru:'Крем делает мою кожу мягкой.' }] },
+  { n:133, cat:'shopping', de:'bequem', en:'comfortable', ru:'',
+    s:[{ de:'Diese Schuhe sind bequem.', en:'These shoes are comfortable.', ru:'Эти туфли удобные.' }, { de:'Der Pullover ist sehr bequem.', en:'The sweater is very comfortable.', ru:'Свитер очень удобный.' }] },
+  { n:134, cat:'shopping', de:'etwas mögen', en:'liking something', ru:'',
+    s:[{ de:'Ich mag diese Farbe.', en:'I like this color.', ru:'Мне нравится этот цвет.' }, { de:'Sie mag diese Jacke.', en:'She likes this jacket.', ru:'Ей нравится эта куртка.' }] },
+  { n:135, cat:'beauty', de:'mit dem eigenen Aussehen zufrieden', en:'pleased with appearance', ru:'',
+    s:[{ de:'Sie ist mit ihrem Aussehen zufrieden.', en:'She is pleased with her appearance.', ru:'Она довольна своим внешним видом.' }, { de:'Heute ist sie mit ihrem Aussehen sehr zufrieden.', en:'Today she is very pleased with her appearance.', ru:'Сегодня она очень довольна своим внешним видом.' }] },
+  { n:136, cat:'beauty', de:'bereit', en:'ready', ru:'',
+    s:[{ de:'Ich bin bereit.', en:'I am ready.', ru:'Я готова.' }, { de:'Sie ist bereit zu gehen.', en:'She is ready to go.', ru:'Она готова идти.' }] },
+  { n:137, cat:'home', de:'ruhig', en:'calm', ru:'',
+    s:[{ de:'Ich bin heute ruhig.', en:'I am calm today.', ru:'Я сегодня спокойна.' }, { de:'Nach dem Kaffee sitzt sie ruhig auf dem Sofa.', en:'After the coffee she sits calmly on the sofa.', ru:'После кофе она спокойно сидит на диване.' }] },
+  { n:138, cat:'home', de:'verwirrt', en:'confused', ru:'',
+    s:[{ de:'Ich bin ein bisschen verwirrt.', en:'I am a little confused.', ru:'Я немного растеряна.' }, { de:'Sie ist verwirrt und sucht ihr Handy.', en:'She is confused and is looking for her phone.', ru:'Она растеряна и ищет свой телефон.' }] },
+  { n:139, cat:'home', de:'erleichtert', en:'relieved', ru:'',
+    s:[{ de:'Ich bin erleichtert.', en:'I am relieved.', ru:'Я чувствую облегчение.' }, { de:'Sie findet ihr Handy und ist erleichtert.', en:'She finds her phone and is relieved.', ru:'Она находит телефон и чувствует облегчение.' }] },
+  { n:140, cat:'home', de:'interessiert', en:'interested', ru:'',
+    s:[{ de:'Ich bin interessiert.', en:'I am interested.', ru:'Мне интересно.' }, { de:'Sie ist an diesem Kleid interessiert.', en:'She is interested in this dress.', ru:'Её интересует это платье.' }] },
+  { n:141, cat:'home', de:'einen Film genießen', en:'enjoying movie', ru:'',
+    s:[{ de:'Ich genieße den Film.', en:'I am enjoying the movie.', ru:'Я наслаждаюсь фильмом.' }, { de:'Am Abend genießt sie einen Film.', en:'In the evening she enjoys a movie.', ru:'Вечером она наслаждается фильмом.' }] },
+  { n:142, cat:'home', de:'Essen genießen', en:'enjoying food', ru:'',
+    s:[{ de:'Ich genieße mein Essen.', en:'I am enjoying my food.', ru:'Я наслаждаюсь едой.' }, { de:'Sie sitzt am Tisch und genießt ihr Essen.', en:'She sits at the table and enjoys her food.', ru:'Она сидит за столом и наслаждается едой.' }] },
+  { n:143, cat:'body', de:'Hände waschen', en:'wash hands', ru:'',
+    s:[{ de:'Ich wasche meine Hände.', en:'I wash my hands.', ru:'Я мою руки.' }, { de:'Vor dem Essen wäscht sie ihre Hände.', en:'Before eating she washes her hands.', ru:'Перед едой она моет руки.' }] },
+  { n:144, cat:'body', de:'das Gesicht waschen', en:'wash face', ru:'',
+    s:[{ de:'Ich wasche mein Gesicht.', en:'I wash my face.', ru:'Я мою лицо.' }, { de:'Am Morgen wäscht sie ihr Gesicht.', en:'In the morning she washes her face.', ru:'Утром она моет лицо.' }] },
+  { n:145, cat:'body', de:'Zähne putzen', en:'brush teeth', ru:'',
+    s:[{ de:'Ich putze meine Zähne.', en:'I brush my teeth.', ru:'Я чищу зубы.' }, { de:'Am Abend putzt sie ihre Zähne.', en:'In the evening she brushes her teeth.', ru:'Вечером она чистит зубы.' }] },
+  { n:146, cat:'beauty', de:'Haare bürsten', en:'brush hair', ru:'',
+    s:[{ de:'Ich bürste meine Haare.', en:'I brush my hair.', ru:'Я расчёсываю волосы.' }, { de:'Am Morgen bürstet sie ihre Haare.', en:'In the morning she brushes her hair.', ru:'Утром она расчёсывает волосы.' }] },
+  { n:147, cat:'beauty', de:'Haare waschen', en:'wash hair', ru:'',
+    s:[{ de:'Ich wasche meine Haare.', en:'I wash my hair.', ru:'Я мою волосы.' }, { de:'Heute Abend wäscht sie ihre Haare.', en:'This evening she washes her hair.', ru:'Сегодня вечером она моет волосы.' }] },
+  { n:148, cat:'body', de:'die Augen schließen', en:'close eyes', ru:'',
+    s:[{ de:'Ich schließe meine Augen.', en:'I close my eyes.', ru:'Я закрываю глаза.' }, { de:'Sie schließt ihre Augen und ruht sich aus.', en:'She closes her eyes and rests.', ru:'Она закрывает глаза и отдыхает.' }] },
+  { n:149, cat:'body', de:'die Augen öffnen', en:'open eyes', ru:'',
+    s:[{ de:'Ich öffne meine Augen.', en:'I open my eyes.', ru:'Я открываю глаза.' }, { de:'Am Morgen öffnet sie ihre Augen.', en:'In the morning she opens her eyes.', ru:'Утром она открывает глаза.' }] },
+  { n:150, cat:'body', de:'die Arme bewegen', en:'move arms', ru:'',
+    s:[{ de:'Ich bewege meine Arme.', en:'I move my arms.', ru:'Я двигаю руками.' }, { de:'Sie bewegt ihre Arme langsam.', en:'She moves her arms slowly.', ru:'Она медленно двигает руками.' }] },
+  { n:151, cat:'body', de:'sich hinsetzen', en:'sit down', ru:'',
+    s:[{ de:'Ich setze mich auf das Sofa.', en:'I sit down on the sofa.', ru:'Я сажусь на диван.' }, { de:'Sie setzt sich auf einen Stuhl.', en:'She sits down on a chair.', ru:'Она садится на стул.' }] },
+  { n:152, cat:'body', de:'sich ausruhen', en:'rest', ru:'',
+    s:[{ de:'Ich ruhe mich aus.', en:'I rest.', ru:'Я отдыхаю.' }, { de:'Nach der Arbeit ruht sie sich aus.', en:'After work she rests.', ru:'После работы она отдыхает.' }] },
+  { n:153, cat:'food', de:'Wasser trinken', en:'drink water', ru:'',
+    s:[{ de:'Ich trinke viel Wasser.', en:'I drink a lot of water.', ru:'Я пью много воды.' }, { de:'Nach dem Spaziergang trinkt sie Wasser.', en:'After the walk she drinks water.', ru:'После прогулки она пьёт воду.' }] },
+  { n:154, cat:'body', de:'einen Pullover anziehen', en:'put on sweater', ru:'',
+    s:[{ de:'Ich ziehe einen warmen Pullover an.', en:'I put on a warm sweater.', ru:'Я надеваю тёплый свитер.' }, { de:'Sie zieht ihren Pullover an.', en:'She puts on her sweater.', ru:'Она надевает свой свитер.' }] },
+  { n:155, cat:'weather', de:'eine Jacke anziehen', en:'put on jacket', ru:'',
+    s:[{ de:'Ich ziehe meine Jacke an.', en:'I put on my jacket.', ru:'Я надеваю куртку.' }, { de:'Sie zieht eine warme Jacke an.', en:'She puts on a warm jacket.', ru:'Она надевает тёплую куртку.' }] },
+  { n:156, cat:'weather', de:'einen Schal anziehen', en:'put on scarf', ru:'',
+    s:[{ de:'Ich ziehe meinen Schal an.', en:'I put on my scarf.', ru:'Я надеваю шарф.' }, { de:'Im Winter zieht sie einen warmen Schal an.', en:'In winter she puts on a warm scarf.', ru:'Зимой она надевает тёплый шарф.' }] },
+  { n:157, cat:'beauty', de:'in den Spiegel schauen', en:'look in mirror', ru:'',
+    s:[{ de:'Ich schaue in den Spiegel.', en:'I look in the mirror.', ru:'Я смотрю в зеркало.' }, { de:'Sie schaut am Morgen in den Spiegel.', en:'In the morning she looks in the mirror.', ru:'Утром она смотрит в зеркало.' }] },
+  { n:158, cat:'beauty', de:'Lippenstift auftragen', en:'apply lipstick', ru:'',
+    s:[{ de:'Ich trage Lippenstift auf.', en:'I apply lipstick.', ru:'Я наношу помаду.' }, { de:'Sie trägt roten Lippenstift auf.', en:'She applies red lipstick.', ru:'Она наносит красную помаду.' }] },
+  { n:159, cat:'beauty', de:'Mascara auftragen', en:'apply mascara', ru:'',
+    s:[{ de:'Ich trage Mascara auf.', en:'I apply mascara.', ru:'Я наношу тушь.' }, { de:'Am Morgen trägt sie Mascara auf.', en:'In the morning she applies mascara.', ru:'Утром она наносит тушь.' }] },
+  { n:160, cat:'beauty', de:'Make-up auftragen', en:'apply makeup', ru:'',
+    s:[{ de:'Ich trage Make-up auf.', en:'I apply makeup.', ru:'Я наношу макияж.' }, { de:'Sie trägt vor dem Abendessen Make-up auf.', en:'She applies makeup before dinner.', ru:'Перед ужином она наносит макияж.' }] },
+  { n:161, cat:'beauty', de:'Fingernägel lackieren', en:'paint fingernails', ru:'',
+    s:[{ de:'Ich lackiere meine Fingernägel.', en:'I paint my fingernails.', ru:'Я крашу ногти.' }, { de:'Sie lackiert ihre Fingernägel rosa.', en:'She paints her fingernails pink.', ru:'Она красит ногти в розовый цвет.' }] },
+  { n:162, cat:'beauty', de:'Gesichtscreme benutzen', en:'use face cream', ru:'',
+    s:[{ de:'Ich benutze Gesichtscreme.', en:'I use face cream.', ru:'Я пользуюсь кремом для лица.' }, { de:'Am Abend benutzt sie Gesichtscreme.', en:'In the evening she uses face cream.', ru:'Вечером она пользуется кремом для лица.' }] },
+  { n:163, cat:'beauty', de:'Parfüm benutzen', en:'use perfume', ru:'',
+    s:[{ de:'Ich benutze Parfüm.', en:'I use perfume.', ru:'Я пользуюсь духами.' }, { de:'Sie benutzt heute ihr neues Parfüm.', en:'Today she uses her new perfume.', ru:'Сегодня она пользуется новыми духами.' }] },
+  { n:164, cat:'beauty', de:'Haare schneiden', en:'cut hair', ru:'',
+    s:[{ de:'Ich möchte meine Haare schneiden.', en:'I want to cut my hair.', ru:'Я хочу подстричься.' }, { de:'Die Friseurin schneidet ihre Haare.', en:'The hairdresser cuts her hair.', ru:'Парикмахерша стрижёт ей волосы.' }] },
+  { n:165, cat:'beauty', de:'sich fertig machen', en:'get ready', ru:'',
+    s:[{ de:'Ich mache mich fertig.', en:'I get ready.', ru:'Я собираюсь.' }, { de:'Sie macht sich für den Abend fertig.', en:'She gets ready for the evening.', ru:'Она собирается на вечер.' }] },
+  { n:166, cat:'shopping', de:'einkaufen gehen', en:'go shopping', ru:'',
+    s:[{ de:'Ich gehe heute einkaufen.', en:'I am going shopping today.', ru:'Сегодня я иду за покупками.' }, { de:'Am Samstag geht sie einkaufen.', en:'On Saturday she goes shopping.', ru:'В субботу она идёт за покупками.' }] },
+  { n:167, cat:'shopping', de:'ein Geschäft betreten', en:'enter store', ru:'',
+    s:[{ de:'Ich betrete das Geschäft.', en:'I enter the store.', ru:'Я вхожу в магазин.' }, { de:'Sie betritt ein kleines Geschäft.', en:'She enters a small store.', ru:'Она входит в маленький магазин.' }] },
+  { n:168, cat:'shopping', de:'nach etwas suchen', en:'look for something', ru:'',
+    s:[{ de:'Ich suche nach einer Jacke.', en:'I am looking for a jacket.', ru:'Я ищу куртку.' }, { de:'Sie sucht nach neuen Schuhen.', en:'She is looking for new shoes.', ru:'Она ищет новую обувь.' }] },
+  { n:169, cat:'shopping', de:'Kleidung ansehen', en:'look at clothing', ru:'',
+    s:[{ de:'Ich sehe mir die Kleidung an.', en:'I look at the clothing.', ru:'Я смотрю на одежду.' }, { de:'Sie sieht sich die Kleidung im Geschäft an.', en:'She looks at the clothing in the store.', ru:'Она рассматривает одежду в магазине.' }] },
+  { n:170, cat:'shopping', de:'eine Jacke auswählen', en:'choose jacket', ru:'',
+    s:[{ de:'Ich wähle eine schwarze Jacke aus.', en:'I choose a black jacket.', ru:'Я выбираю чёрную куртку.' }, { de:'Sie wählt eine warme Jacke aus.', en:'She chooses a warm jacket.', ru:'Она выбирает тёплую куртку.' }] },
+  { n:171, cat:'shopping', de:'Kleidung anprobieren', en:'try on clothing', ru:'',
+    s:[{ de:'Ich probiere die Kleidung an.', en:'I try on the clothing.', ru:'Я примеряю одежду.' }, { de:'Sie probiert ein Kleid an.', en:'She tries on a dress.', ru:'Она примеряет платье.' }] },
+  { n:172, cat:'shopping', de:'Schuhe anprobieren', en:'try on shoes', ru:'',
+    s:[{ de:'Ich probiere die Schuhe an.', en:'I try on the shoes.', ru:'Я примеряю туфли.' }, { de:'Sie probiert ein Paar Schuhe an.', en:'She tries on a pair of shoes.', ru:'Она примеряет пару обуви.' }] },
+  { n:173, cat:'shopping', de:'das Verkaufspersonal fragen', en:'ask salesperson', ru:'',
+    s:[{ de:'Ich frage die Verkäuferin.', en:'I ask the saleswoman.', ru:'Я спрашиваю продавщицу.' }, { de:'Sie fragt den Verkäufer nach dem Preis.', en:'She asks the salesman about the price.', ru:'Она спрашивает продавца о цене.' }] },
+  { n:174, cat:'shopping', de:'die Größe prüfen', en:'check size', ru:'',
+    s:[{ de:'Ich prüfe die Größe.', en:'I check the size.', ru:'Я проверяю размер.' }, { de:'Sie prüft die Größe der Jacke.', en:'She checks the size of the jacket.', ru:'Она проверяет размер куртки.' }] },
+  { n:175, cat:'shopping', de:'etwas kaufen', en:'buy something', ru:'',
+    s:[{ de:'Ich kaufe etwas.', en:'I buy something.', ru:'Я что-то покупаю.' }, { de:'Sie kauft eine neue Jacke.', en:'She buys a new jacket.', ru:'Она покупает новую куртку.' }] },
+  { n:176, cat:'shopping', de:'mit Karte bezahlen', en:'pay by card', ru:'',
+    s:[{ de:'Ich bezahle mit Karte.', en:'I pay by card.', ru:'Я плачу картой.' }, { de:'Sie bezahlt die Schuhe mit Karte.', en:'She pays for the shoes by card.', ru:'Она платит за туфли картой.' }] },
+  { n:177, cat:'shopping', de:'eine Einkaufstasche tragen', en:'carry shopping bag', ru:'',
+    s:[{ de:'Ich trage eine Einkaufstasche.', en:'I carry a shopping bag.', ru:'Я несу сумку с покупками.' }, { de:'Sie trägt ihre Einkaufstasche nach Hause.', en:'She carries her shopping bag home.', ru:'Она несёт сумку с покупками домой.' }] },
+  { n:178, cat:'shopping', de:'einen Artikel nehmen', en:'take item', ru:'',
+    s:[{ de:'Ich nehme diesen Artikel.', en:'I take this item.', ru:'Я беру этот товар.' }, { de:'Sie nimmt den Artikel und geht zur Kasse.', en:'She takes the item and goes to the checkout.', ru:'Она берёт товар и идёт к кассе.' }] },
+  { n:179, cat:'food', de:'essen', en:'eat', ru:'',
+    s:[{ de:'Ich möchte etwas essen.', en:'I want to eat something.', ru:'Я хочу что-нибудь поесть.' }, { de:'Sie isst am Tisch.', en:'She is eating at the table.', ru:'Она ест за столом.' }] },
+  { n:180, cat:'food', de:'trinken', en:'drink', ru:'',
+    s:[{ de:'Ich möchte etwas trinken.', en:'I want to drink something.', ru:'Я хочу что-нибудь выпить.' }, { de:'Sie trinkt ein Glas Wasser.', en:'She drinks a glass of water.', ru:'Она пьёт стакан воды.' }] },
+  { n:181, cat:'food', de:'Gemüse essen', en:'eat vegetables', ru:'',
+    s:[{ de:'Ich esse gern Gemüse.', en:'I like eating vegetables.', ru:'Я люблю есть овощи.' }, { de:'Sie isst jeden Tag Gemüse.', en:'She eats vegetables every day.', ru:'Она ест овощи каждый день.' }] },
+  { n:182, cat:'food', de:'Brot essen', en:'eat bread', ru:'',
+    s:[{ de:'Ich esse Brot zum Frühstück.', en:'I eat bread for breakfast.', ru:'Я ем хлеб на завтрак.' }, { de:'Sie isst ein Stück Brot.', en:'She eats a piece of bread.', ru:'Она ест кусок хлеба.' }] },
+  { n:183, cat:'food', de:'Kaffee trinken', en:'drink coffee', ru:'',
+    s:[{ de:'Ich trinke morgens Kaffee.', en:'I drink coffee in the morning.', ru:'Я пью кофе по утрам.' }, { de:'Sie trinkt eine Tasse Kaffee.', en:'She drinks a cup of coffee.', ru:'Она пьёт чашку кофе.' }] },
+  { n:184, cat:'food', de:'Tee trinken', en:'drink tea', ru:'',
+    s:[{ de:'Ich trinke gern Tee.', en:'I like drinking tea.', ru:'Я люблю пить чай.' }, { de:'Am Abend trinkt sie Tee.', en:'In the evening she drinks tea.', ru:'Вечером она пьёт чай.' }] },
+  { n:185, cat:'food', de:'einen Apfel essen', en:'eat apple', ru:'',
+    s:[{ de:'Ich esse einen Apfel.', en:'I eat an apple.', ru:'Я ем яблоко.' }, { de:'Sie isst am Nachmittag einen Apfel.', en:'In the afternoon she eats an apple.', ru:'Днём она ест яблоко.' }] },
+  { n:186, cat:'food', de:'Eier essen', en:'eat eggs', ru:'',
+    s:[{ de:'Ich esse zwei Eier.', en:'I eat two eggs.', ru:'Я ем два яйца.' }, { de:'Sie isst Eier zum Frühstück.', en:'She eats eggs for breakfast.', ru:'Она ест яйца на завтрак.' }] },
+  { n:187, cat:'food', de:'frühstücken', en:'eat breakfast', ru:'',
+    s:[{ de:'Ich frühstücke jeden Morgen.', en:'I have breakfast every morning.', ru:'Я завтракаю каждое утро.' }, { de:'Sie frühstückt um acht Uhr.', en:'She has breakfast at eight o\'clock.', ru:'Она завтракает в восемь часов.' }] },
+  { n:188, cat:'food', de:'Salat essen', en:'eat salad', ru:'',
+    s:[{ de:'Ich esse gern Salat.', en:'I like eating salad.', ru:'Я люблю есть салат.' }, { de:'Sie isst einen Salat zum Abendessen.', en:'She eats a salad for dinner.', ru:'Она ест салат на ужин.' }] },
+  { n:189, cat:'food', de:'kochen', en:'cook', ru:'',
+    s:[{ de:'Ich koche heute Abend.', en:'I am cooking this evening.', ru:'Сегодня вечером я готовлю.' }, { de:'Sie kocht gern zu Hause.', en:'She likes cooking at home.', ru:'Она любит готовить дома.' }] },
+  { n:190, cat:'food', de:'Frühstück zubereiten', en:'make breakfast', ru:'',
+    s:[{ de:'Ich bereite das Frühstück zu.', en:'I prepare breakfast.', ru:'Я готовлю завтрак.' }, { de:'Am Morgen bereitet sie das Frühstück zu.', en:'In the morning she prepares breakfast.', ru:'Утром она готовит завтрак.' }] },
+  { n:191, cat:'food', de:'Suppe kochen', en:'make soup', ru:'',
+    s:[{ de:'Ich koche eine Suppe.', en:'I cook a soup.', ru:'Я варю суп.' }, { de:'Am Abend kocht sie eine warme Suppe.', en:'In the evening she cooks a warm soup.', ru:'Вечером она варит тёплый суп.' }] },
+  { n:192, cat:'food', de:'eine Tomate schneiden', en:'cut tomato', ru:'',
+    s:[{ de:'Ich schneide eine Tomate.', en:'I cut a tomato.', ru:'Я режу помидор.' }, { de:'Sie schneidet die Tomate für den Salat.', en:'She cuts the tomato for the salad.', ru:'Она режет помидор для салата.' }] },
+  { n:193, cat:'food', de:'Gemüse schneiden', en:'cut vegetables', ru:'',
+    s:[{ de:'Ich schneide das Gemüse.', en:'I cut the vegetables.', ru:'Я режу овощи.' }, { de:'Sie schneidet Gemüse für die Suppe.', en:'She cuts vegetables for the soup.', ru:'Она режет овощи для супа.' }] },
+  { n:194, cat:'food', de:'Kartoffeln schneiden', en:'cut potatoes', ru:'',
+    s:[{ de:'Ich schneide die Kartoffeln.', en:'I cut the potatoes.', ru:'Я режу картошку.' }, { de:'Sie schneidet Kartoffeln für das Abendessen.', en:'She cuts potatoes for dinner.', ru:'Она режет картошку на ужин.' }] },
+  { n:195, cat:'food', de:'Karotten schneiden', en:'cut carrots', ru:'',
+    s:[{ de:'Ich schneide die Karotten.', en:'I cut the carrots.', ru:'Я режу морковь.' }, { de:'Sie schneidet Karotten für die Suppe.', en:'She cuts carrots for the soup.', ru:'Она режет морковь для супа.' }] },
+  { n:196, cat:'food', de:'Zwiebeln schneiden', en:'cut onions', ru:'',
+    s:[{ de:'Ich schneide die Zwiebeln.', en:'I cut the onions.', ru:'Я режу лук.' }, { de:'Sie schneidet zwei Zwiebeln.', en:'She cuts two onions.', ru:'Она режет две луковицы.' }] },
+  { n:197, cat:'food', de:'Gemüse in einen Topf geben', en:'put vegetables into pot', ru:'',
+    s:[{ de:'Ich gebe das Gemüse in den Topf.', en:'I put the vegetables into the pot.', ru:'Я кладу овощи в кастрюлю.' }, { de:'Sie gibt die Karotten und Kartoffeln in den Topf.', en:'She puts the carrots and potatoes into the pot.', ru:'Она кладёт морковь и картошку в кастрюлю.' }] },
+  { n:198, cat:'food', de:'Essen probieren', en:'taste food', ru:'',
+    s:[{ de:'Ich probiere das Essen.', en:'I taste the food.', ru:'Я пробую еду.' }, { de:'Sie probiert die Suppe.', en:'She tastes the soup.', ru:'Она пробует суп.' }] },
+  { n:199, cat:'family', de:'Essen servieren', en:'serve food', ru:'',
+    s:[{ de:'Ich serviere das Essen.', en:'I serve the food.', ru:'Я подаю еду.' }, { de:'Sie serviert das Abendessen.', en:'She serves dinner.', ru:'Она подаёт ужин.' }] },
+  { n:200, cat:'home', de:'aufwachen', en:'wake up', ru:'',
+    s:[{ de:'Ich wache um sieben Uhr auf.', en:'I wake up at seven o\'clock.', ru:'Я просыпаюсь в семь часов.' }, { de:'Sie wacht jeden Morgen früh auf.', en:'She wakes up early every morning.', ru:'Она просыпается каждое утро рано.' }] },
+  { n:201, cat:'home', de:'das Bett machen', en:'make bed', ru:'',
+    s:[{ de:'Ich mache mein Bett.', en:'I make my bed.', ru:'Я застилаю кровать.' }, { de:'Am Morgen macht sie ihr Bett.', en:'In the morning she makes her bed.', ru:'Утром она застилает кровать.' }] },
+  { n:202, cat:'home', de:'das Fenster öffnen', en:'open window', ru:'',
+    s:[{ de:'Ich öffne das Fenster.', en:'I open the window.', ru:'Я открываю окно.' }, { de:'Am Morgen öffnet sie das Fenster.', en:'In the morning she opens the window.', ru:'Утром она открывает окно.' }] },
+  { n:203, cat:'home', de:'das Licht einschalten', en:'turn on light', ru:'',
+    s:[{ de:'Ich schalte das Licht ein.', en:'I turn on the light.', ru:'Я включаю свет.' }, { de:'Am Abend schaltet sie das Licht ein.', en:'In the evening she turns on the light.', ru:'Вечером она включает свет.' }] },
+  { n:204, cat:'home', de:'das Licht ausschalten', en:'turn off light', ru:'',
+    s:[{ de:'Ich schalte das Licht aus.', en:'I turn off the light.', ru:'Я выключаю свет.' }, { de:'Vor dem Schlafen schaltet sie das Licht aus.', en:'Before sleeping she turns off the light.', ru:'Перед сном она выключает свет.' }] },
+  { n:205, cat:'home', de:'das Zimmer putzen', en:'clean room', ru:'',
+    s:[{ de:'Ich putze mein Zimmer.', en:'I clean my room.', ru:'Я убираю свою комнату.' }, { de:'Am Samstag putzt sie ihr Zimmer.', en:'On Saturday she cleans her room.', ru:'В субботу она убирает свою комнату.' }] },
+  { n:206, cat:'home', de:'aufräumen', en:'tidy up', ru:'',
+    s:[{ de:'Ich räume heute auf.', en:'I tidy up today.', ru:'Сегодня я убираюсь.' }, { de:'Am Morgen räumt sie die Wohnung auf.', en:'In the morning she tidies the apartment.', ru:'Утром она убирает квартиру.' }] },
+  { n:207, cat:'home', de:'Wäsche waschen', en:'do laundry', ru:'',
+    s:[{ de:'Ich wasche heute die Wäsche.', en:'I do the laundry today.', ru:'Сегодня я стираю бельё.' }, { de:'Am Samstag wäscht sie die Wäsche.', en:'On Saturday she does the laundry.', ru:'В субботу она стирает бельё.' }] },
+  { n:208, cat:'home', de:'die Küche putzen', en:'clean kitchen', ru:'',
+    s:[{ de:'Ich putze die Küche.', en:'I clean the kitchen.', ru:'Я убираю кухню.' }, { de:'Nach dem Abendessen putzt sie die Küche.', en:'After dinner she cleans the kitchen.', ru:'После ужина она убирает кухню.' }] },
+  { n:209, cat:'home', de:'auf dem Sofa sitzen', en:'sit on sofa', ru:'',
+    s:[{ de:'Ich sitze auf dem Sofa.', en:'I sit on the sofa.', ru:'Я сижу на диване.' }, { de:'Am Abend sitzt sie auf dem Sofa.', en:'In the evening she sits on the sofa.', ru:'Вечером она сидит на диване.' }] },
+  { n:210, cat:'home', de:'fernsehen', en:'watch TV', ru:'',
+    s:[{ de:'Ich sehe am Abend fern.', en:'I watch TV in the evening.', ru:'Вечером я смотрю телевизор.' }, { de:'Sie sieht nach dem Abendessen fern.', en:'She watches TV after dinner.', ru:'После ужина она смотрит телевизор.' }] },
+  { n:211, cat:'home', de:'ins Bett gehen', en:'go to bed', ru:'',
+    s:[{ de:'Ich gehe um zehn Uhr ins Bett.', en:'I go to bed at ten o\'clock.', ru:'Я ложусь спать в десять часов.' }, { de:'Sie geht heute früh ins Bett.', en:'She is going to bed early today.', ru:'Сегодня она ложится спать рано.' }] },
+  { n:212, cat:'home', de:'schlafen', en:'sleep', ru:'',
+    s:[{ de:'Ich schlafe acht Stunden.', en:'I sleep eight hours.', ru:'Я сплю восемь часов.' }, { de:'Sie schläft heute lange.', en:'She is sleeping late today.', ru:'Сегодня она долго спит.' }] },
+  { n:213, cat:'home', de:'zu Hause bleiben', en:'stay home', ru:'',
+    s:[{ de:'Ich bleibe heute zu Hause.', en:'I am staying home today.', ru:'Сегодня я остаюсь дома.' }, { de:'Bei schlechtem Wetter bleibt sie zu Hause.', en:'In bad weather she stays home.', ru:'В плохую погоду она остаётся дома.' }] },
+  { n:214, cat:'home', de:'nach dem Handy suchen', en:'look for phone', ru:'',
+    s:[{ de:'Ich suche nach meinem Handy.', en:'I am looking for my phone.', ru:'Я ищу свой телефон.' }, { de:'Sie sucht im Zimmer nach ihrem Handy.', en:'She is looking for her phone in the room.', ru:'Она ищет свой телефон в комнате.' }] },
+  { n:215, cat:'home', de:'auf dem Tisch nachsehen', en:'look on table', ru:'',
+    s:[{ de:'Ich sehe auf dem Tisch nach.', en:'I look on the table.', ru:'Я смотрю на стол.' }, { de:'Sie sieht zuerst auf dem Tisch nach.', en:'She first looks on the table.', ru:'Сначала она смотрит на стол.' }] },
+  { n:216, cat:'home', de:'auf dem Sofa nachsehen', en:'look on sofa', ru:'',
+    s:[{ de:'Ich sehe auf dem Sofa nach.', en:'I look on the sofa.', ru:'Я смотрю на диван.' }, { de:'Sie sieht auch auf dem Sofa nach.', en:'She also looks on the sofa.', ru:'Она также смотрит на диван.' }] },
+  { n:217, cat:'home', de:'auf dem Bett nachsehen', en:'look on bed', ru:'',
+    s:[{ de:'Ich sehe auf dem Bett nach.', en:'I look on the bed.', ru:'Я смотрю на кровать.' }, { de:'Dann sieht sie auf dem Bett nach.', en:'Then she looks on the bed.', ru:'Потом она смотрит на кровать.' }] },
+  { n:218, cat:'home', de:'das Handy finden', en:'find phone', ru:'',
+    s:[{ de:'Ich finde mein Handy.', en:'I find my phone.', ru:'Я нахожу свой телефон.' }, { de:'Sie findet ihr Handy auf dem Bett.', en:'She finds her phone on the bed.', ru:'Она находит свой телефон на кровати.' }] },
+  { n:219, cat:'family', de:'sprechen', en:'talk', ru:'',
+    s:[{ de:'Ich spreche mit meiner Mutter.', en:'I talk to my mother.', ru:'Я разговариваю с мамой.' }, { de:'Wir sprechen jeden Tag.', en:'We talk every day.', ru:'Мы разговариваем каждый день.' }] },
+  { n:220, cat:'family', de:'miteinander sprechen', en:'talk together', ru:'',
+    s:[{ de:'Wir sprechen miteinander.', en:'We talk to each other.', ru:'Мы разговариваем друг с другом.' }, { de:'Am Abend sprechen sie miteinander.', en:'In the evening they talk to each other.', ru:'Вечером они разговаривают друг с другом.' }] },
+  { n:221, cat:'family', de:'jemanden anrufen', en:'call someone on phone', ru:'',
+    s:[{ de:'Ich rufe meine Mutter an.', en:'I call my mother.', ru:'Я звоню маме.' }, { de:'Sie ruft ihren Sohn an.', en:'She calls her son.', ru:'Она звонит сыну.' }] },
+  { n:222, cat:'family', de:'die Familie besuchen', en:'visit family', ru:'',
+    s:[{ de:'Ich besuche meine Familie.', en:'I visit my family.', ru:'Я навещаю семью.' }, { de:'Am Wochenende besucht sie ihre Familie.', en:'On the weekend she visits her family.', ru:'В выходные она навещает семью.' }] },
+  { n:223, cat:'family', de:'zusammen essen', en:'eat together', ru:'',
+    s:[{ de:'Wir essen zusammen.', en:'We eat together.', ru:'Мы едим вместе.' }, { de:'Am Abend essen sie zusammen.', en:'In the evening they eat together.', ru:'Вечером они едят вместе.' }] },
+  { n:224, cat:'family', de:'zusammen Kaffee trinken', en:'drink coffee together', ru:'',
+    s:[{ de:'Wir trinken zusammen Kaffee.', en:'We drink coffee together.', ru:'Мы пьём кофе вместе.' }, { de:'Am Nachmittag trinken sie zusammen Kaffee.', en:'In the afternoon they drink coffee together.', ru:'Днём они пьют кофе вместе.' }] },
+  { n:225, cat:'family', de:'zusammen einen Film ansehen', en:'watch movie together', ru:'',
+    s:[{ de:'Wir sehen zusammen einen Film an.', en:'We watch a movie together.', ru:'Мы смотрим фильм вместе.' }, { de:'Am Abend sehen sie zusammen einen Film an.', en:'In the evening they watch a movie together.', ru:'Вечером они смотрят фильм вместе.' }] },
+  { n:226, cat:'family', de:'von der Schule nach Hause kommen', en:'come home from school', ru:'',
+    s:[{ de:'Der Junge kommt von der Schule nach Hause.', en:'The boy comes home from school.', ru:'Мальчик приходит домой из школы.' }, { de:'Er kommt um drei Uhr von der Schule nach Hause.', en:'He comes home from school at three o\'clock.', ru:'Он приходит домой из школы в три часа.' }] },
+  { n:227, cat:'family', de:'jemandem vom eigenen Tag erzählen', en:'tell someone about your day', ru:'',
+    s:[{ de:'Ich erzähle meiner Mutter von meinem Tag.', en:'I tell my mother about my day.', ru:'Я рассказываю маме о своём дне.' }, { de:'Der Junge erzählt ihr von seinem Tag.', en:'The boy tells her about his day.', ru:'Мальчик рассказывает ей о своём дне.' }] },
+  { n:228, cat:'family', de:'jemandem zuhören', en:'listen to someone', ru:'',
+    s:[{ de:'Ich höre meiner Mutter zu.', en:'I listen to my mother.', ru:'Я слушаю маму.' }, { de:'Sie hört ihrem Sohn zu.', en:'She listens to her son.', ru:'Она слушает сына.' }] },
+  { n:229, cat:'family', de:'zusammen Hausaufgaben machen', en:'do homework together', ru:'',
+    s:[{ de:'Wir machen zusammen Hausaufgaben.', en:'We do homework together.', ru:'Мы делаем домашнее задание вместе.' }, { de:'Mutter und Sohn machen zusammen die Hausaufgaben.', en:'Mother and son do the homework together.', ru:'Мама и сын делают домашнее задание вместе.' }] },
+  { n:230, cat:'weather', de:'es regnet', en:'raining', ru:'',
+    s:[{ de:'Heute regnet es.', en:'It is raining today.', ru:'Сегодня идёт дождь.' }, { de:'Am Nachmittag regnet es stark.', en:'In the afternoon it is raining hard.', ru:'Днём идёт сильный дождь.' }] },
+  { n:231, cat:'weather', de:'es schneit', en:'snowing', ru:'',
+    s:[{ de:'Heute schneit es.', en:'It is snowing today.', ru:'Сегодня идёт снег.' }, { de:'Draußen schneit es stark.', en:'Outside it is snowing hard.', ru:'На улице идёт сильный снег.' }] },
+  { n:232, cat:'weather', de:'die Sonne scheint', en:'sun shining', ru:'',
+    s:[{ de:'Die Sonne scheint.', en:'The sun is shining.', ru:'Светит солнце.' }, { de:'Heute Morgen scheint die Sonne.', en:'This morning the sun is shining.', ru:'Сегодня утром светит солнце.' }] },
+  { n:233, cat:'weather', de:'der Wind weht', en:'wind blowing', ru:'',
+    s:[{ de:'Der Wind weht stark.', en:'The wind is blowing hard.', ru:'Ветер сильно дует.' }, { de:'Heute weht ein kalter Wind.', en:'Today a cold wind is blowing.', ru:'Сегодня дует холодный ветер.' }] },
+  { n:234, cat:'weather', de:'aus dem Fenster schauen', en:'look out window', ru:'',
+    s:[{ de:'Ich schaue aus dem Fenster.', en:'I look out the window.', ru:'Я смотрю в окно.' }, { de:'Sie sitzt am Fenster und schaut nach draußen.', en:'She sits by the window and looks outside.', ru:'Она сидит у окна и смотрит на улицу.' }] },
+  { n:235, cat:'weather', de:'einen Regenschirm mitnehmen', en:'take umbrella', ru:'',
+    s:[{ de:'Ich nehme einen Regenschirm mit.', en:'I take an umbrella with me.', ru:'Я беру с собой зонт.' }, { de:'Sie nimmt heute ihren Regenschirm mit.', en:'Today she takes her umbrella with her.', ru:'Сегодня она берёт с собой зонт.' }] },
+  { n:236, cat:'weather', de:'bei kaltem Wetter draußen spazieren gehen', en:'walk outside in cold weather', ru:'',
+    s:[{ de:'Ich gehe bei kaltem Wetter draußen spazieren.', en:'I walk outside in cold weather.', ru:'Я гуляю на улице в холодную погоду.' }, { de:'Sie trägt eine warme Jacke, wenn sie bei kaltem Wetter draußen spazieren geht.', en:'She wears a warm jacket when she walks outside in cold weather.', ru:'Она надевает тёплую куртку, когда гуляет на улице в холодную погоду.' }] },
+  { n:237, cat:'travel', de:'mit dem Bus fahren', en:'ride bus', ru:'',
+    s:[{ de:'Ich fahre mit dem Bus.', en:'I ride the bus.', ru:'Я езжу на автобусе.' }, { de:'Sie fährt jeden Morgen mit dem Bus.', en:'She rides the bus every morning.', ru:'Она каждое утро ездит на автобусе.' }] },
+  { n:238, cat:'travel', de:'mit dem Zug fahren', en:'ride train', ru:'',
+    s:[{ de:'Ich fahre mit dem Zug.', en:'I ride the train.', ru:'Я езжу на поезде.' }, { de:'Wir fahren morgen mit dem Zug.', en:'We are riding the train tomorrow.', ru:'Завтра мы едем на поезде.' }] },
+  { n:239, cat:'travel', de:'auf den Bus warten', en:'wait for bus', ru:'',
+    s:[{ de:'Ich warte auf den Bus.', en:'I wait for the bus.', ru:'Я жду автобус.' }, { de:'Sie wartet an der Bushaltestelle auf den Bus.', en:'She waits for the bus at the bus stop.', ru:'Она ждёт автобус на остановке.' }] },
+  { n:240, cat:'travel', de:'zur Bushaltestelle gehen', en:'go to bus stop', ru:'',
+    s:[{ de:'Ich gehe zur Bushaltestelle.', en:'I go to the bus stop.', ru:'Я иду на автобусную остановку.' }, { de:'Sie geht am Morgen zur Bushaltestelle.', en:'In the morning she goes to the bus stop.', ru:'Утром она идёт на автобусную остановку.' }] },
+  { n:241, cat:'travel', de:'zum Bahnhof gehen', en:'go to train station', ru:'',
+    s:[{ de:'Ich gehe zum Bahnhof.', en:'I go to the train station.', ru:'Я иду на вокзал.' }, { de:'Sie geht mit ihrem Koffer zum Bahnhof.', en:'She goes to the train station with her suitcase.', ru:'Она идёт на вокзал со своим чемоданом.' }] },
+  { n:242, cat:'travel', de:'eine Fahrkarte bei sich tragen', en:'carry ticket', ru:'',
+    s:[{ de:'Ich habe meine Fahrkarte bei mir.', en:'I have my ticket with me.', ru:'У меня с собой билет.' }, { de:'Sie trägt ihre Fahrkarte bei sich.', en:'She is carrying her ticket with her.', ru:'Она носит с собой билет.' }] },
+  { n:243, cat:'travel', de:'in den Bus einsteigen', en:'get on bus', ru:'',
+    s:[{ de:'Ich steige in den Bus ein.', en:'I get on the bus.', ru:'Я сажусь в автобус.' }, { de:'Sie steigt an der Bushaltestelle in den Bus ein.', en:'She gets on the bus at the bus stop.', ru:'Она садится в автобус на остановке.' }] },
+  { n:244, cat:'travel', de:'aus dem Bus aussteigen', en:'get off bus', ru:'',
+    s:[{ de:'Ich steige aus dem Bus aus.', en:'I get off the bus.', ru:'Я выхожу из автобуса.' }, { de:'Sie steigt im Stadtzentrum aus dem Bus aus.', en:'She gets off the bus in the city center.', ru:'Она выходит из автобуса в центре города.' }] },
+  { n:245, cat:'travel', de:'im Bus sitzen', en:'sit on bus', ru:'',
+    s:[{ de:'Ich sitze im Bus.', en:'I sit on the bus.', ru:'Я сижу в автобусе.' }, { de:'Sie sitzt im Bus am Fenster.', en:'She sits on the bus by the window.', ru:'Она сидит в автобусе у окна.' }] },
+  { n:246, cat:'travel', de:'einen Sitzplatz finden', en:'find seat', ru:'',
+    s:[{ de:'Ich finde einen Sitzplatz.', en:'I find a seat.', ru:'Я нахожу место.' }, { de:'Sie steigt ein und findet einen Sitzplatz.', en:'She gets on and finds a seat.', ru:'Она садится и находит место.' }] },
+  { n:247, cat:'travel', de:'am Zugfenster sitzen', en:'sit by train window', ru:'',
+    s:[{ de:'Ich sitze am Zugfenster.', en:'I sit by the train window.', ru:'Я сижу у окна в поезде.' }, { de:'Der Junge sitzt gern am Zugfenster.', en:'The boy likes sitting by the train window.', ru:'Мальчик любит сидеть у окна в поезде.' }] },
+  { n:248, cat:'travel', de:'aus dem Zugfenster schauen', en:'look out train window', ru:'',
+    s:[{ de:'Ich schaue aus dem Zugfenster.', en:'I look out the train window.', ru:'Я смотрю в окно поезда.' }, { de:'Sie schaut aus dem Zugfenster und sieht die Landschaft.', en:'She looks out the train window and sees the landscape.', ru:'Она смотрит в окно поезда и видит пейзаж.' }] },
+  { n:249, cat:'travel', de:'einen Koffer tragen', en:'carry suitcase', ru:'',
+    s:[{ de:'Ich trage meinen Koffer.', en:'I carry my suitcase.', ru:'Я несу свой чемодан.' }, { de:'Sie trägt einen kleinen Koffer.', en:'She carries a small suitcase.', ru:'Она несёт маленький чемодан.' }] },
+  { n:250, cat:'travel', de:'ins Stadtzentrum fahren', en:'travel to city center', ru:'',
+    s:[{ de:'Ich fahre ins Stadtzentrum.', en:'I travel to the city center.', ru:'Я еду в центр города.' }, { de:'Sie fährt mit dem Bus ins Stadtzentrum.', en:'She travels to the city center by bus.', ru:'Она едет в центр города на автобусе.' }] },
+  { n:251, cat:'travel', de:'am Bahnhof ankommen', en:'arrive at train station', ru:'',
+    s:[{ de:'Ich komme am Bahnhof an.', en:'I arrive at the train station.', ru:'Я приезжаю на вокзал.' }, { de:'Sie kommt um neun Uhr am Bahnhof an.', en:'She arrives at the train station at nine o\'clock.', ru:'Она приезжает на вокзал в девять часов.' }] },
+  { n:252, cat:'travel', de:'mit dem Zug abfahren', en:'depart by train', ru:'',
+    s:[{ de:'Ich fahre mit dem Zug ab.', en:'I depart by train.', ru:'Я отправляюсь на поезде.' }, { de:'Sie fährt am Morgen mit dem Zug ab.', en:'In the morning she departs by train.', ru:'Утром она отправляется на поезде.' }] },
+  { n:253, cat:'shopping', de:'zu teuer', en:'too expensive', ru:'',
+    s:[{ de:'Diese Jacke ist zu teuer.', en:'This jacket is too expensive.', ru:'Эта куртка слишком дорогая.' }, { de:'Die Schuhe sind schön, aber zu teuer.', en:'The shoes are beautiful, but too expensive.', ru:'Туфли красивые, но слишком дорогие.' }] },
+  { n:254, cat:'shopping', de:'billig', en:'cheap', ru:'',
+    s:[{ de:'Diese Tasche ist billig.', en:'This bag is cheap.', ru:'Эта сумка дешёвая.' }, { de:'Der Pullover ist sehr billig.', en:'The sweater is very cheap.', ru:'Свитер очень дешёвый.' }] },
+  { n:255, cat:'shopping', de:'zu groß', en:'too big', ru:'',
+    s:[{ de:'Die Jacke ist zu groß.', en:'The jacket is too big.', ru:'Куртка слишком большая.' }, { de:'Diese Hose ist mir zu groß.', en:'These pants are too big for me.', ru:'Эти брюки мне слишком большие.' }] },
+  { n:256, cat:'shopping', de:'zu klein', en:'too small', ru:'',
+    s:[{ de:'Das Kleid ist zu klein.', en:'The dress is too small.', ru:'Платье слишком маленькое.' }, { de:'Diese Schuhe sind mir zu klein.', en:'These shoes are too small for me.', ru:'Эти туфли мне слишком маленькие.' }] },
+  { n:257, cat:'shopping', de:'passt gut', en:'fits well', ru:'',
+    s:[{ de:'Das Kleid passt gut.', en:'The dress fits well.', ru:'Платье хорошо сидит.' }, { de:'Die kleinere Jacke passt ihr gut.', en:'The smaller jacket fits her well.', ru:'Меньшая куртка ей хорошо сидит.' }] },
+  { n:258, cat:'shopping', de:'bequeme Schuhe', en:'comfortable shoes', ru:'',
+    s:[{ de:'Ich brauche bequeme Schuhe.', en:'I need comfortable shoes.', ru:'Мне нужна удобная обувь.' }, { de:'Diese Schuhe sind sehr bequem.', en:'These shoes are very comfortable.', ru:'Эти туфли очень удобные.' }] },
+  { n:259, cat:'shopping', de:'das Geschäft ist geöffnet', en:'store is open', ru:'',
+    s:[{ de:'Das Geschäft ist heute geöffnet.', en:'The store is open today.', ru:'Магазин сегодня открыт.' }, { de:'Am Samstag ist das Geschäft geöffnet.', en:'On Saturday the store is open.', ru:'В субботу магазин открыт.' }] },
+  { n:260, cat:'beauty', de:'sich für den Abend fertig machen', en:'getting ready for evening', ru:'',
+    s:[{ de:'Ich mache mich für den Abend fertig.', en:'I get ready for the evening.', ru:'Я собираюсь на вечер.' }, { de:'Sie macht sich vor dem Spiegel für den Abend fertig.', en:'She gets ready for the evening in front of the mirror.', ru:'Она собирается на вечер перед зеркалом.' }] },
+  { n:261, cat:'beauty', de:'frisch gewaschene Haare', en:'freshly washed hair', ru:'',
+    s:[{ de:'Meine Haare sind frisch gewaschen.', en:'My hair is freshly washed.', ru:'Мои волосы свежевымытые.' }, { de:'Sie hat heute frisch gewaschene Haare.', en:'Today she has freshly washed hair.', ru:'Сегодня у неё свежевымытые волосы.' }] },
+  { n:262, cat:'food', de:'das Essen ist fertig', en:'food is ready', ru:'',
+    s:[{ de:'Das Essen ist fertig.', en:'The food is ready.', ru:'Еда готова.' }, { de:'Sie sagt: „Das Essen ist fertig.“', en:'She says: "The food is ready."', ru:'Она говорит: «Еда готова».' }] },
+  { n:263, cat:'food', de:'vor dem Essen hungrig', en:'hungry before eating', ru:'',
+    s:[{ de:'Ich bin vor dem Essen hungrig.', en:'I am hungry before eating.', ru:'Перед едой я голодна.' }, { de:'Am Morgen ist sie vor dem Frühstück sehr hungrig.', en:'In the morning she is very hungry before breakfast.', ru:'Утром перед завтраком она очень голодна.' }] },
+  { n:264, cat:'food', de:'nach dem Essen satt', en:'full after eating', ru:'',
+    s:[{ de:'Ich bin nach dem Essen satt.', en:'I am full after eating.', ru:'После еды я сыта.' }, { de:'Nach dem Abendessen ist sie sehr satt.', en:'After dinner she is very full.', ru:'После ужина она очень сыта.' }] },
+  { n:265, cat:'weather', de:'ein kalter Morgen', en:'cold morning', ru:'',
+    s:[{ de:'Heute ist ein kalter Morgen.', en:'Today is a cold morning.', ru:'Сегодня холодное утро.' }, { de:'An einem kalten Morgen trage ich eine warme Jacke.', en:'On a cold morning I wear a warm jacket.', ru:'В холодное утро я надеваю тёплую куртку.' }] },
+  { n:266, cat:'weather', de:'eine warme Wohnung', en:'warm apartment', ru:'',
+    s:[{ de:'Meine Wohnung ist warm.', en:'My apartment is warm.', ru:'Моя квартира тёплая.' }, { de:'Im Winter ist eine warme Wohnung sehr schön.', en:'In winter a warm apartment is very nice.', ru:'Зимой тёплая квартира очень приятна.' }] },
+  { n:267, cat:'weather', de:'ein regnerischer Nachmittag', en:'rainy afternoon', ru:'',
+    s:[{ de:'Heute ist ein regnerischer Nachmittag.', en:'Today is a rainy afternoon.', ru:'Сегодня дождливый день.' }, { de:'An einem regnerischen Nachmittag nehme ich einen Regenschirm mit.', en:'On a rainy afternoon I take an umbrella with me.', ru:'В дождливый день я беру с собой зонт.' }] },
+  { n:268, cat:'weather', de:'ein sonniger Abend', en:'sunny evening', ru:'',
+    s:[{ de:'Heute ist ein sonniger Abend.', en:'Today is a sunny evening.', ru:'Сегодня солнечный вечер.' }, { de:'An einem sonnigen Abend gehe ich gern spazieren.', en:'On a sunny evening I like to go for a walk.', ru:'В солнечный вечер я люблю гулять.' }] },
+  { n:269, cat:'weather', de:'auf den Bus warten', en:'waiting for bus', ru:'',
+    s:[{ de:'Ich warte auf den Bus.', en:'I wait for the bus.', ru:'Я жду автобус.' }, { de:'Sie steht an der Bushaltestelle und wartet auf den Bus.', en:'She stands at the bus stop and waits for the bus.', ru:'Она стоит на остановке и ждёт автобус.' }] },
+  { n:270, cat:'travel', de:'der Zug hat Verspätung', en:'train is late', ru:'',
+    s:[{ de:'Der Zug hat Verspätung.', en:'The train is late.', ru:'Поезд опаздывает.' }, { de:'Heute hat der Zug zehn Minuten Verspätung.', en:'Today the train is ten minutes late.', ru:'Сегодня поезд опаздывает на десять минут.' }] },
+  { n:271, cat:'travel', de:'fast da', en:'almost there', ru:'',
+    s:[{ de:'Ich bin fast da.', en:'I am almost there.', ru:'Я почти на месте.' }, { de:'Wir sind jetzt fast da.', en:'We are almost there now.', ru:'Мы сейчас почти на месте.' }] },
+  { n:272, cat:'travel', de:'von der Schule nach Hause kommen', en:'coming home from school', ru:'',
+    s:[{ de:'Der Junge kommt von der Schule nach Hause.', en:'The boy is coming home from school.', ru:'Мальчик идёт домой из школы.' }, { de:'Am Nachmittag kommt er von der Schule nach Hause.', en:'In the afternoon he comes home from school.', ru:'Днём он приходит домой из школы.' }] },
+  { n:273, cat:'family', de:'über den eigenen Tag sprechen', en:'talking about day', ru:'',
+    s:[{ de:'Ich spreche über meinen Tag.', en:'I talk about my day.', ru:'Я рассказываю о своём дне.' }, { de:'Mutter und Sohn sprechen über ihren Tag.', en:'Mother and son talk about their day.', ru:'Мама и сын рассказывают о своём дне.' }] },
+  { n:274, cat:'family', de:'zusammen einen Film ansehen', en:'watching movie together', ru:'',
+    s:[{ de:'Wir sehen zusammen einen Film an.', en:'We watch a movie together.', ru:'Мы смотрим фильм вместе.' }, { de:'Am Abend sehen sie zusammen einen Film an.', en:'In the evening they watch a movie together.', ru:'Вечером они смотрят фильм вместе.' }] },
+  { n:275, cat:'home', de:'nach dem verlorenen Handy suchen', en:'looking for lost phone', ru:'',
+    s:[{ de:'Ich suche nach meinem verlorenen Handy.', en:'I am looking for my lost phone.', ru:'Я ищу свой потерянный телефон.' }, { de:'Sie sucht im Wohnzimmer nach ihrem verlorenen Handy.', en:'She is looking for her lost phone in the living room.', ru:'Она ищет свой потерянный телефон в гостиной.' }] },
+  { n:276, cat:'home', de:'das verlorene Handy finden', en:'finding lost phone', ru:'',
+    s:[{ de:'Ich finde mein verlorenes Handy.', en:'I find my lost phone.', ru:'Я нахожу свой потерянный телефон.' }, { de:'Sie findet ihr verlorenes Handy unter dem Sofa.', en:'She finds her lost phone under the sofa.', ru:'Она находит свой потерянный телефон под диваном.' }] },
+  { n:277, cat:'home', de:'sich wegen Rückenschmerzen ausruhen', en:'resting because of back pain', ru:'',
+    s:[{ de:'Ich ruhe mich wegen meiner Rückenschmerzen aus.', en:'I rest because of my back pain.', ru:'Я отдыхаю из-за боли в спине.' }, { de:'Sie hat Rückenschmerzen und ruht sich auf dem Sofa aus.', en:'She has back pain and rests on the sofa.', ru:'У неё болит спина, и она отдыхает на диване.' }] },
+  { n:278, cat:'body', de:'sich nach dem Ausruhen besser fühlen', en:'feeling better after resting', ru:'',
+    s:[{ de:'Ich fühle mich nach dem Ausruhen besser.', en:'I feel better after resting.', ru:'После отдыха я чувствую себя лучше.' }, { de:'Nach dem Ausruhen fühlt sie sich viel besser.', en:'After resting she feels much better.', ru:'После отдыха она чувствует себя намного лучше.' }] },
 
-   'mean' only appears when the interface is in Russian or English AND
-   every word in the set has that translation. German-to-German would
-   be pointless, and entries above 70 have no Russian yet.
+  /* --- sheets 32-38: colours, descriptions, time, bathroom,
+     kitchen, places. Same shape as everything above. --- */
+  { n:280, cat:'colors', de:'rot', en:'red', ru:'красный',
+    s:[{ de:'Die Jacke ist rot.', en:'The jacket is red.', ru:'Куртка красная.' }, { de:'Der Apfel ist rot.', en:'The apple is red.', ru:'Яблоко красное.' }] },
+  { n:281, cat:'colors', de:'blau', en:'blue', ru:'синий',
+    s:[{ de:'Der Himmel ist blau.', en:'The sky is blue.', ru:'Небо голубое.' }, { de:'Die Tasche ist blau.', en:'The bag is blue.', ru:'Сумка синяя.' }] },
+  { n:282, cat:'colors', de:'grün', en:'green', ru:'зелёный',
+    s:[{ de:'Das Gemüse ist grün.', en:'The vegetables are green.', ru:'Овощи зелёные.' }, { de:'Die Jacke ist grün.', en:'The jacket is green.', ru:'Куртка зелёная.' }] },
+  { n:283, cat:'colors', de:'gelb', en:'yellow', ru:'жёлтый',
+    s:[{ de:'Die Zitrone ist gelb.', en:'The lemon is yellow.', ru:'Лимон жёлтый.' }, { de:'Der Pullover ist gelb.', en:'The sweater is yellow.', ru:'Свитер жёлтый.' }] },
+  { n:284, cat:'colors', de:'schwarz', en:'black', ru:'чёрный',
+    s:[{ de:'Die Jacke ist schwarz.', en:'The jacket is black.', ru:'Куртка чёрная.' }, { de:'Die Tasche ist schwarz.', en:'The bag is black.', ru:'Сумка чёрная.' }] },
+  { n:285, cat:'colors', de:'weiß', en:'white', ru:'белый',
+    s:[{ de:'Das T-Shirt ist weiß.', en:'The T-shirt is white.', ru:'Футболка белая.' }, { de:'Der Schnee ist weiß.', en:'The snow is white.', ru:'Снег белый.' }] },
+  { n:286, cat:'colors', de:'grau', en:'gray', ru:'серый',
+    s:[{ de:'Der Himmel ist grau.', en:'The sky is gray.', ru:'Небо серое.' }, { de:'Der Pullover ist grau.', en:'The sweater is gray.', ru:'Свитер серый.' }] },
+  { n:287, cat:'colors', de:'rosa', en:'pink', ru:'розовый',
+    s:[{ de:'Der Nagellack ist rosa.', en:'The nail polish is pink.', ru:'Лак для ногтей розовый.' }, { de:'Der Schal ist rosa.', en:'The scarf is pink.', ru:'Шарф розовый.' }] },
+  { n:288, cat:'colors', de:'lila', en:'purple', ru:'фиолетовый',
+    s:[{ de:'Die Tasche ist lila.', en:'The bag is purple.', ru:'Сумка фиолетовая.' }, { de:'Der Pullover ist lila.', en:'The sweater is purple.', ru:'Свитер фиолетовый.' }] },
+  { n:289, cat:'describe', de:'groß', en:'big', ru:'большой',
+    s:[{ de:'Das Geschäft ist groß.', en:'The store is big.', ru:'Магазин большой.' }, { de:'Die Wohnung ist groß.', en:'The apartment is big.', ru:'Квартира большая.' }] },
+  { n:290, cat:'describe', de:'klein', en:'small', ru:'маленький',
+    s:[{ de:'Der Koffer ist klein.', en:'The suitcase is small.', ru:'Чемодан маленький.' }, { de:'Die Küche ist klein.', en:'The kitchen is small.', ru:'Кухня маленькая.' }] },
+  { n:291, cat:'describe', de:'warm', en:'warm', ru:'тёплый',
+    s:[{ de:'Die Wohnung ist warm.', en:'The apartment is warm.', ru:'В квартире тепло.' }, { de:'Die Suppe ist warm.', en:'The soup is warm.', ru:'Суп тёплый.' }] },
+  { n:292, cat:'describe', de:'kalt', en:'cold', ru:'холодный',
+    s:[{ de:'Das Wasser ist kalt.', en:'The water is cold.', ru:'Вода холодная.' }, { de:'Der Morgen ist kalt.', en:'The morning is cold.', ru:'Утро холодное.' }] },
+  { n:293, cat:'describe', de:'weich', en:'soft', ru:'мягкий',
+    s:[{ de:'Der Pullover ist weich.', en:'The sweater is soft.', ru:'Свитер мягкий.' }, { de:'Meine Haut ist weich.', en:'My skin is soft.', ru:'Моя кожа мягкая.' }] },
+  { n:294, cat:'describe', de:'trocken', en:'dry', ru:'сухой',
+    s:[{ de:'Meine Haut ist trocken.', en:'My skin is dry.', ru:'Моя кожа сухая.' }, { de:'Das Handtuch ist trocken.', en:'The towel is dry.', ru:'Полотенце сухое.' }] },
+  { n:295, cat:'describe', de:'frisch', en:'fresh', ru:'свежий',
+    s:[{ de:'Das Brot ist frisch.', en:'The bread is fresh.', ru:'Хлеб свежий.' }, { de:'Das Gemüse ist frisch.', en:'The vegetables are fresh.', ru:'Овощи свежие.' }] },
+  { n:296, cat:'describe', de:'teuer', en:'expensive', ru:'дорогой',
+    s:[{ de:'Die Jacke ist teuer.', en:'The jacket is expensive.', ru:'Куртка дорогая.' }, { de:'Diese Schuhe sind teuer.', en:'These shoes are expensive.', ru:'Эти туфли дорогие.' }] },
+  { n:297, cat:'describe', de:'billig', en:'cheap', ru:'дешёвый',
+    s:[{ de:'Der Pullover ist billig.', en:'The sweater is cheap.', ru:'Свитер дешёвый.' }, { de:'Diese Tasche ist billig.', en:'This bag is cheap.', ru:'Эта сумка дешёвая.' }] },
+  { n:298, cat:'shopping', de:'die Kleidung', en:'clothing', ru:'одежда', rg:'F',
+    s:[{ de:'Die Kleidung ist im Geschäft.', en:'The clothing is in the store.', ru:'Одежда находится в магазине.' }, { de:'Ich sehe mir die Kleidung an.', en:'I am looking at the clothing.', ru:'Я рассматриваю одежду.' }] },
+  { n:299, cat:'shopping', de:'die Größe', en:'size', ru:'размер', rg:'M',
+    s:[{ de:'Welche Größe brauchen Sie?', en:'What size do you need?', ru:'Какой размер вам нужен?' }, { de:'Die Größe steht auf dem Etikett.', en:'The size is written on the label.', ru:'Размер указан на этикетке.' }] },
+  { n:300, cat:'shopping', de:'das Verkaufspersonal', en:'sales staff', ru:'продавцы', rg:'PL',
+    s:[{ de:'Das Verkaufspersonal ist freundlich.', en:'The sales staff are friendly.', ru:'Продавцы дружелюбные.' }, { de:'Ich frage das Verkaufspersonal nach dem Preis.', en:'I ask the sales staff about the price.', ru:'Я спрашиваю продавцов о цене.' }] },
+  { n:301, cat:'shopping', de:'der Artikel', en:'item', ru:'товар', rg:'M',
+    s:[{ de:'Dieser Artikel ist billig.', en:'This item is cheap.', ru:'Этот товар дешёвый.' }, { de:'Ich kaufe den Artikel.', en:'I am buying the item.', ru:'Я покупаю этот товар.' }] },
+  { n:302, cat:'shopping', de:'die Einkaufstasche', en:'shopping bag', ru:'сумка для покупок', rg:'F',
+    s:[{ de:'Die Einkaufstasche ist schwer.', en:'The shopping bag is heavy.', ru:'Сумка для покупок тяжёлая.' }, { de:'Ich trage die Einkaufstasche nach Hause.', en:'I carry the shopping bag home.', ru:'Я несу сумку с покупками домой.' }] },
+  { n:303, cat:'home', de:'der Film', en:'movie', ru:'фильм', rg:'M',
+    s:[{ de:'Der Film ist interessant.', en:'The movie is interesting.', ru:'Фильм интересный.' }, { de:'Wir sehen am Abend einen Film.', en:'We watch a movie in the evening.', ru:'Вечером мы смотрим фильм.' }] },
+  { n:304, cat:'shopping', de:'der Preis', en:'price', ru:'цена', rg:'F',
+    s:[{ de:'Der Preis ist zu hoch.', en:'The price is too high.', ru:'Цена слишком высокая.' }, { de:'Ich frage nach dem Preis.', en:'I ask about the price.', ru:'Я спрашиваю о цене.' }] },
+  { n:305, cat:'shopping', de:'das Geld', en:'money', ru:'деньги', rg:'PL',
+    s:[{ de:'Das Geld ist in meiner Tasche.', en:'The money is in my bag.', ru:'Деньги в моей сумке.' }, { de:'Ich brauche Geld für die Jacke.', en:'I need money for the jacket.', ru:'Мне нужны деньги на куртку.' }] },
+  { n:306, cat:'shopping', de:'der Kassenzettel', en:'receipt', ru:'чек', rg:'M',
+    s:[{ de:'Der Kassenzettel ist in meiner Tasche.', en:'The receipt is in my bag.', ru:'Чек в моей сумке.' }, { de:'Ich nehme den Kassenzettel mit.', en:'I take the receipt with me.', ru:'Я беру чек с собой.' }] },
+  { n:307, cat:'time', de:'der Morgen', en:'morning', ru:'утро', rg:'N',
+    s:[{ de:'Der Morgen ist ruhig.', en:'The morning is quiet.', ru:'Утро спокойное.' }, { de:'Am Morgen trinke ich Kaffee.', en:'I drink coffee in the morning.', ru:'Утром я пью кофе.' }] },
+  { n:308, cat:'time', de:'der Vormittag', en:'late morning', ru:'первая половина дня', rg:'F',
+    s:[{ de:'Der Vormittag ist warm.', en:'The late morning is warm.', ru:'В первой половине дня тепло.' }, { de:'Am Vormittag gehe ich einkaufen.', en:'I go shopping in the late morning.', ru:'В первой половине дня я иду за покупками.' }] },
+  { n:309, cat:'time', de:'der Mittag', en:'midday', ru:'полдень', rg:'M',
+    s:[{ de:'Am Mittag esse ich Suppe.', en:'At noon I eat soup.', ru:'В полдень я ем суп.' }, { de:'Der Mittag ist heute sehr warm.', en:'It is very warm at midday today.', ru:'Сегодня в полдень очень тепло.' }] },
+  { n:310, cat:'time', de:'der Nachmittag', en:'afternoon', ru:'вторая половина дня', rg:'F',
+    s:[{ de:'Am Nachmittag trinke ich Kaffee.', en:'I drink coffee in the afternoon.', ru:'Днём я пью кофе.' }, { de:'Der Nachmittag ist sonnig.', en:'The afternoon is sunny.', ru:'День солнечный.' }] },
+  { n:311, cat:'time', de:'der Abend', en:'evening', ru:'вечер', rg:'M',
+    s:[{ de:'Am Abend sehe ich einen Film.', en:'I watch a movie in the evening.', ru:'Вечером я смотрю фильм.' }, { de:'Der Abend ist ruhig.', en:'The evening is quiet.', ru:'Вечер спокойный.' }] },
+  { n:312, cat:'time', de:'die Nacht', en:'night', ru:'ночь', rg:'F',
+    s:[{ de:'Die Nacht ist kalt.', en:'The night is cold.', ru:'Ночь холодная.' }, { de:'In der Nacht schlafe ich.', en:'I sleep at night.', ru:'Ночью я сплю.' }] },
+  { n:313, cat:'time', de:'der Tag', en:'day', ru:'день', rg:'M',
+    s:[{ de:'Der Tag ist lang.', en:'The day is long.', ru:'День длинный.' }, { de:'Heute ist ein schöner Tag.', en:'Today is a beautiful day.', ru:'Сегодня прекрасный день.' }] },
+  { n:314, cat:'time', de:'die Woche', en:'week', ru:'неделя', rg:'F',
+    s:[{ de:'Die Woche ist sehr lang.', en:'The week is very long.', ru:'Неделя очень длинная.' }, { de:'Diese Woche gehe ich oft einkaufen.', en:'I go shopping often this week.', ru:'На этой неделе я часто хожу за покупками.' }] },
+  { n:315, cat:'time', de:'das Wochenende', en:'weekend', ru:'выходные', rg:'PL',
+    s:[{ de:'Am Wochenende besuche ich meine Familie.', en:'I visit my family on the weekend.', ru:'На выходных я навещаю свою семью.' }, { de:'Das Wochenende ist ruhig.', en:'The weekend is quiet.', ru:'Выходные спокойные.' }] },
+  { n:316, cat:'bath', de:'die Dusche', en:'shower', ru:'душ', rg:'M',
+    s:[{ de:'Die Dusche ist warm.', en:'The shower is warm.', ru:'Душ тёплый.' }, { de:'Am Morgen gehe ich unter die Dusche.', en:'In the morning I take a shower.', ru:'Утром я принимаю душ.' }] },
+  { n:317, cat:'bath', de:'die Badewanne', en:'bathtub', ru:'ванна', rg:'F',
+    s:[{ de:'Die Badewanne ist groß.', en:'The bathtub is big.', ru:'Ванна большая.' }, { de:'Das Wasser ist in der Badewanne.', en:'The water is in the bathtub.', ru:'Вода в ванне.' }] },
+  { n:318, cat:'bath', de:'das Handtuch', en:'towel', ru:'полотенце', rg:'N',
+    s:[{ de:'Das Handtuch ist weich.', en:'The towel is soft.', ru:'Полотенце мягкое.' }, { de:'Ich trockne meine Hände mit dem Handtuch.', en:'I dry my hands with the towel.', ru:'Я вытираю руки полотенцем.' }] },
+  { n:319, cat:'bath', de:'die Seife', en:'soap', ru:'мыло', rg:'N',
+    s:[{ de:'Die Seife liegt an der Spüle.', en:'The soap is by the sink.', ru:'Мыло лежит у раковины.' }, { de:'Ich wasche meine Hände mit Seife.', en:'I wash my hands with soap.', ru:'Я мою руки с мылом.' }] },
+  { n:320, cat:'bath', de:'das Shampoo', en:'shampoo', ru:'шампунь', rg:'M',
+    s:[{ de:'Das Shampoo ist in der Dusche.', en:'The shampoo is in the shower.', ru:'Шампунь находится в душе.' }, { de:'Ich wasche meine Haare mit Shampoo.', en:'I wash my hair with shampoo.', ru:'Я мою волосы шампунем.' }] },
+  { n:321, cat:'bath', de:'die Zahnbürste', en:'toothbrush', ru:'зубная щётка', rg:'F',
+    s:[{ de:'Meine Zahnbürste ist blau.', en:'My toothbrush is blue.', ru:'Моя зубная щётка синяя.' }, { de:'Ich putze meine Zähne mit der Zahnbürste.', en:'I brush my teeth with the toothbrush.', ru:'Я чищу зубы зубной щёткой.' }] },
+  { n:322, cat:'bath', de:'die Zahnpasta', en:'toothpaste', ru:'зубная паста', rg:'F',
+    s:[{ de:'Die Zahnpasta liegt neben der Zahnbürste.', en:'The toothpaste is next to the toothbrush.', ru:'Зубная паста лежит рядом с зубной щёткой.' }, { de:'Ich brauche neue Zahnpasta.', en:'I need new toothpaste.', ru:'Мне нужна новая зубная паста.' }] },
+  { n:323, cat:'bath', de:'die Toilette', en:'toilet', ru:'туалет', rg:'M',
+    s:[{ de:'Die Toilette ist im Badezimmer.', en:'The toilet is in the bathroom.', ru:'Туалет находится в ванной комнате.' }, { de:'Ich putze die Toilette.', en:'I clean the toilet.', ru:'Я чищу туалет.' }] },
+  { n:324, cat:'bath', de:'das Toilettenpapier', en:'toilet paper', ru:'туалетная бумага', rg:'F',
+    s:[{ de:'Das Toilettenpapier ist neben der Toilette.', en:'The toilet paper is next to the toilet.', ru:'Туалетная бумага находится рядом с туалетом.' }, { de:'Wir brauchen neues Toilettenpapier.', en:'We need new toilet paper.', ru:'Нам нужна новая туалетная бумага.' }] },
+  { n:325, cat:'kitchen', de:'der Kühlschrank', en:'refrigerator', ru:'холодильник', rg:'M',
+    s:[{ de:'Die Milch ist im Kühlschrank.', en:'The milk is in the refrigerator.', ru:'Молоко в холодильнике.' }, { de:'Ich nehme das Gemüse aus dem Kühlschrank.', en:'I take the vegetables out of the refrigerator.', ru:'Я достаю овощи из холодильника.' }] },
+  { n:326, cat:'kitchen', de:'der Herd', en:'stove', ru:'плита', rg:'F',
+    s:[{ de:'Der Kochtopf steht auf dem Herd.', en:'The cooking pot is on the stove.', ru:'Кастрюля стоит на плите.' }, { de:'Ich koche die Suppe auf dem Herd.', en:'I cook the soup on the stove.', ru:'Я варю суп на плите.' }] },
+  { n:327, cat:'kitchen', de:'der Backofen', en:'oven', ru:'духовка', rg:'F',
+    s:[{ de:'Der Backofen ist heiß.', en:'The oven is hot.', ru:'Духовка горячая.' }, { de:'Das Essen ist im Backofen.', en:'The food is in the oven.', ru:'Еда в духовке.' }] },
+  { n:328, cat:'kitchen', de:'die Spüle', en:'kitchen sink', ru:'раковина', rg:'F',
+    s:[{ de:'Die Spüle ist in der Küche.', en:'The sink is in the kitchen.', ru:'Раковина находится на кухне.' }, { de:'Ich wasche den Teller in der Spüle.', en:'I wash the plate in the sink.', ru:'Я мою тарелку в раковине.' }] },
+  { n:329, cat:'kitchen', de:'der Teller', en:'plate', ru:'тарелка', rg:'F',
+    s:[{ de:'Das Essen ist auf dem Teller.', en:'The food is on the plate.', ru:'Еда на тарелке.' }, { de:'Der Teller steht auf dem Tisch.', en:'The plate is on the table.', ru:'Тарелка стоит на столе.' }] },
+  { n:330, cat:'kitchen', de:'die Schüssel', en:'bowl', ru:'миска', rg:'F',
+    s:[{ de:'Die Suppe ist in der Schüssel.', en:'The soup is in the bowl.', ru:'Суп в миске.' }, { de:'Ich stelle die Schüssel auf den Tisch.', en:'I put the bowl on the table.', ru:'Я ставлю миску на стол.' }] },
+  { n:331, cat:'kitchen', de:'die Tasse', en:'cup', ru:'чашка', rg:'F',
+    s:[{ de:'Der Kaffee ist in der Tasse.', en:'The coffee is in the cup.', ru:'Кофе в чашке.' }, { de:'Die Tasse steht auf dem Tisch.', en:'The cup is on the table.', ru:'Чашка стоит на столе.' }] },
+  { n:332, cat:'kitchen', de:'das Besteck', en:'cutlery', ru:'столовые приборы', rg:'PL',
+    s:[{ de:'Das Besteck liegt auf dem Tisch.', en:'The cutlery is on the table.', ru:'Столовые приборы лежат на столе.' }, { de:'Ich brauche Besteck für das Abendessen.', en:'I need cutlery for dinner.', ru:'Мне нужны столовые приборы для ужина.' }] },
+  { n:333, cat:'kitchen', de:'das Schneidebrett', en:'cutting board', ru:'разделочная доска', rg:'F',
+    s:[{ de:'Das Schneidebrett liegt in der Küche.', en:'The cutting board is in the kitchen.', ru:'Разделочная доска находится на кухне.' }, { de:'Ich schneide die Karotten auf dem Schneidebrett.', en:'I cut the carrots on the cutting board.', ru:'Я режу морковь на разделочной доске.' }] },
+  { n:334, cat:'places', de:'der Supermarkt', en:'supermarket', ru:'супермаркет', rg:'M',
+    s:[{ de:'Ich gehe in den Supermarkt.', en:'I go to the supermarket.', ru:'Я иду в супермаркет.' }, { de:'Der Supermarkt ist heute geöffnet.', en:'The supermarket is open today.', ru:'Супермаркет сегодня открыт.' }] },
+  { n:335, cat:'places', de:'die Apotheke', en:'pharmacy', ru:'аптека', rg:'F',
+    s:[{ de:'Ich gehe in die Apotheke.', en:'I go to the pharmacy.', ru:'Я иду в аптеку.' }, { de:'Die Apotheke ist neben dem Supermarkt.', en:'The pharmacy is next to the supermarket.', ru:'Аптека находится рядом с супермаркетом.' }] },
+  { n:336, cat:'places', de:'die Bäckerei', en:'bakery', ru:'пекарня', rg:'F',
+    s:[{ de:'Ich kaufe Brot in der Bäckerei.', en:'I buy bread at the bakery.', ru:'Я покупаю хлеб в пекарне.' }, { de:'Die Bäckerei ist am Morgen geöffnet.', en:'The bakery is open in the morning.', ru:'Пекарня открыта утром.' }] },
+  { n:337, cat:'places', de:'das Restaurant', en:'restaurant', ru:'ресторан', rg:'M',
+    s:[{ de:'Wir essen in einem Restaurant.', en:'We eat at a restaurant.', ru:'Мы едим в ресторане.' }, { de:'Das Restaurant ist im Stadtzentrum.', en:'The restaurant is in the city center.', ru:'Ресторан находится в центре города.' }] },
+  { n:338, cat:'places', de:'das Café', en:'café', ru:'кафе', rg:'N',
+    s:[{ de:'Ich trinke Kaffee im Café.', en:'I drink coffee at the café.', ru:'Я пью кофе в кафе.' }, { de:'Das Café ist klein und ruhig.', en:'The café is small and quiet.', ru:'Кафе маленькое и спокойное.' }] },
+  { n:339, cat:'places', de:'die Bank', en:'bank', ru:'банк', rg:'M',
+    s:[{ de:'Ich gehe heute zur Bank.', en:'I am going to the bank today.', ru:'Сегодня я иду в банк.' }, { de:'Die Bank ist im Stadtzentrum.', en:'The bank is in the city center.', ru:'Банк находится в центре города.' }] },
+  { n:340, cat:'places', de:'die Post', en:'post office', ru:'почта', rg:'F',
+    s:[{ de:'Ich gehe zur Post.', en:'I go to the post office.', ru:'Я иду на почту.' }, { de:'Die Post ist neben der Bank.', en:'The post office is next to the bank.', ru:'Почта находится рядом с банком.' }] },
+  { n:341, cat:'places', de:'die Arztpraxis', en:'doctor\'s office', ru:'кабинет врача', rg:'M',
+    s:[{ de:'Ich gehe heute in die Arztpraxis.', en:'I am going to the doctor\'s office today.', ru:'Сегодня я иду к врачу.' }, { de:'Die Arztpraxis ist nicht weit.', en:'The doctor\'s office is not far away.', ru:'Кабинет врача находится недалеко.' }] },
+  { n:342, cat:'places', de:'der Spielplatz', en:'playground', ru:'детская площадка', rg:'F',
+    s:[{ de:'Der Junge spielt auf dem Spielplatz.', en:'The boy is playing on the playground.', ru:'Мальчик играет на детской площадке.' }, { de:'Der Spielplatz ist neben der Schule.', en:'The playground is next to the school.', ru:'Детская площадка находится рядом со школой.' }] },
+];
 
-   Phase two has two shapes:
-     blank  the sentence with the word missing, pick the word
-     pic    the sentence in German, pick the image it describes  */
-
-window.GH = window.GH || {};
-
-GH.vocab = (function(){
-
-  var SET_SIZE = 6;
-  var OPTIONS  = 4;
-
-  var host = null;
-  var state = null;
-
-  function t(key, vars){ return GH.i18n.t(key, vars); }
-
-  function el(tag, cls, text){
-    var n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text !== undefined && text !== null) n.textContent = text;
-    return n;
-  }
-
-  /* ---------- sets ---------- */
-
-  function wordsIn(cat){
-    return (window.GH_VOCAB || []).filter(function(v){ return v.cat === cat; });
-  }
-
-  /* Sequential chunks, not random ones: the numbering runs thematically,
-     so neighbours belong together and the set hangs together. */
-  function setsFor(cat){
-    var all = wordsIn(cat), out = [], i;
-    for (i = 0; i < all.length; i += SET_SIZE){
-      var chunk = all.slice(i, i + SET_SIZE);
-      if (chunk.length >= 3) out.push(chunk);       /* a stub of 1-2 is not a set */
-      else if (out.length) out[out.length - 1] = out[out.length - 1].concat(chunk);
-    }
-    return out;
-  }
-
-  function meaningKey(){
-    var lang = GH.i18n.lang();
-    return (lang === 'ru' || lang === 'en') ? lang : null;
-  }
-
-  function canMean(words){
-    var k = meaningKey();
-    if (!k) return false;
-    for (var i = 0; i < words.length; i++) if (!words[i][k]) return false;
-    return true;
-  }
-
-  /* ---------- distractors ---------- */
-
-  /* Pulled from the same topic so the choice is a real one, and never
-     from an entry whose German contains this one's — 'der Lippenstift'
-     against 'der rote Lippenstift' is a coin toss, not a question. */
-  function overlaps(a, b){
-    var x = a.de.toLowerCase(), y = b.de.toLowerCase();
-    return x.indexOf(y) >= 0 || y.indexOf(x) >= 0;
-  }
-
-  function distractors(word, pool, howMany){
-    var near = [], far = [], i;
-    for (i = 0; i < pool.length; i++){
-      var c = pool[i];
-      if (c.n === word.n || overlaps(word, c)) continue;
-      (c.cat === word.cat ? near : far).push(c);
-    }
-    near = GH.text.shuffle(near);
-    far  = GH.text.shuffle(far);
-    return near.concat(far).slice(0, howMany);
-  }
-
-  /* ---------- building the queues ---------- */
-
-  function wordQuestions(words, shape){
-    var pool = window.GH_VOCAB || [];
-    return GH.text.shuffle(words.map(function(w){
-      return {
-        word:w,
-        shape:shape,
-        options:GH.text.shuffle([w].concat(distractors(w, pool, OPTIONS - 1))),
-        done:false
-      };
-    }));
-  }
-
-  function sentenceQuestions(words, shape){
-    var pool = window.GH_VOCAB || [], out = [];
-    words.forEach(function(w){
-      w.s.forEach(function(sen){
-        out.push({
-          word:w,
-          sentence:sen,
-          shape:shape,
-          options:GH.text.shuffle([w].concat(distractors(w, pool, OPTIONS - 1)))
-        });
-      });
-    });
-    return GH.text.shuffle(out);
-  }
-
-  /* Blanks the word in the sentence. Tries each part of the entry,
-     longest first, matching on a stem so inflected forms still hit.
-     Separable verbs ('aufwachen' -> 'wache ... auf') and irregulars
-     ('essen' -> 'isst') often cannot be found at all; those sentences
-     report no blank and the activity shows them as picture questions
-     instead of inventing a blank in the wrong place. */
-  var SKIP = { der:1, die:1, das:1, ein:1, eine:1, einen:1, einem:1, einer:1,
-               sich:1, etwas:1, mit:1, dem:1, den:1, zu:1, im:1, am:1, auf:1,
-               in:1, bei:1, vor:1, nach:1, ins:1, zwei:1, sehr:1, eigenen:1,
-               jemandem:1, jemanden:1, und:1 };
-
-  function blankOut(sen, word){
-    var parts = word.de.split(/\s+/).filter(function(p){
-      return p.length >= 3 && !SKIP[p.toLowerCase()];
-    });
-    parts.sort(function(a, b){ return b.length - a.length; });
-
-    var i, stem, re, m = null;
-    for (i = 0; i < parts.length && !m; i++){
-      stem = parts[i].length > 5 ? parts[i].slice(0, parts[i].length - 2) : parts[i];
-      re = new RegExp('[A-Za-zÄÖÜäöüß]*' +
-                      stem.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') +
-                      '[A-Za-zÄÖÜäöüß]*', 'i');
-      m = sen.de.match(re);
-    }
-    if (!m) return { before:sen.de, blank:'', after:'', ok:false };
-    return {
-      before:sen.de.slice(0, m.index),
-      blank:m[0],
-      after:sen.de.slice(m.index + m[0].length),
-      ok:true
-    };
-  }
-
-  /* ---------- painting ---------- */
-
-  function tile(word, onPick){
-    var b = el('button', 'vopt-pic');
-    b.type = 'button';
-    b.appendChild(GH.sprite.tile(word.n));
-    b.addEventListener('click', function(){ onPick(word, b); });
-    return b;
-  }
-
-  function textOption(label, word, onPick){
-    var b = el('button', 'option', label);
-    b.type = 'button';
-    b.addEventListener('click', function(){ onPick(word, b); });
-    return b;
-  }
-
-  function paint(){
-    host.textContent = '';
-
-    var head = el('div', 'practice-head');
-    var back = el('button', 'backlink', '‹ ' + t('back'));
-    back.type = 'button';
-    back.addEventListener('click', function(){ state.onExit(); });
-    head.appendChild(back);
-
-    var titles = el('div', 'practice-title');
-    titles.appendChild(el('h1', null, state.title));
-    titles.appendChild(el('p', null, state.phase === 'words'
-      ? t('vocabWords') : t('vocabSentences')));
-    head.appendChild(titles);
-
-    var q = current();
-    var total = state.phase === 'words' ? state.words.length : state.sentences.length;
-    var left  = state.phase === 'words'
-      ? state.words.filter(function(x){ return !x.done; }).length : state.sIndex;
-    var prog = el('div', 'progress');
-    var meter = el('div', 'meter');
-    var bar = el('div', 'bar');
-    bar.style.width = Math.round(((total - left) / total) * 100) + '%';
-    meter.appendChild(bar);
-    prog.appendChild(meter);
-    prog.appendChild(el('span', 'progress-label',
-      t('roundOf', { i:(total - left + (state.phase === 'words' ? 0 : 1)), n:total })));
-    head.appendChild(prog);
-    host.appendChild(head);
-
-    if (!q){ paintDone(); return; }
-
-    var card = el('div', 'card');
-
-    /* shape toggle */
-    var tools = el('div', 'card-tools');
-    if (GH.speech.supported){
-      var speak = el('button', 'speak');
-      speak.type = 'button';
-      speak.appendChild(el('span', 'speak-icon', '🔊'));
-      speak.appendChild(el('span', null, t('listen')));
-      speak.addEventListener('click', function(){
-        GH.speech.say(q.sentence ? q.sentence.de : q.word.de);
-      });
-      tools.appendChild(speak);
-    }
-    tools.appendChild(shapeToggle());
-    card.appendChild(tools);
-
-    if (state.phase === 'words') paintWord(card, q);
-    else paintSentence(card, q);
-
-    if (state.feedback){
-      var fb = el('p', 'feedback ' + state.feedbackKind, state.feedback);
-      card.appendChild(fb);
-    }
-    host.appendChild(card);
-
-    if (state.autoSpeak){
-      state.autoSpeak = false;
-      GH.speech.say(q.sentence ? q.sentence.de : q.word.de);
-    }
-  }
-
-  function shapeToggle(){
-    var wrap = el('div', 'mode-toggle');
-    var shapes = state.phase === 'words'
-      ? [['pic', 'vShapePic'], ['word', 'vShapeWord']]
-      : [['blank', 'vShapeBlank'], ['pic', 'vShapePic']];
-    if (state.phase === 'words' && canMean(state.set)) shapes.push(['mean', 'vShapeMean']);
-    shapes.forEach(function(pair){
-      var b = el('button', null, t(pair[1]));
-      b.type = 'button';
-      b.setAttribute('aria-pressed', shapeOf() === pair[0] ? 'true' : 'false');
-      b.addEventListener('click', function(){
-        if (state.phase === 'words') state.wordShape = pair[0];
-        else state.senShape = pair[0];
-        rebuild();
-      });
-      wrap.appendChild(b);
-    });
-    return wrap;
-  }
-
-  function shapeOf(){
-    return state.phase === 'words' ? state.wordShape : state.senShape;
-  }
-
-  function paintWord(card, q){
-    var shape = state.wordShape;
-    var pick = answerWord;
-
-    if (shape === 'pic'){
-      var fig = el('figure', 'figure');
-      fig.appendChild(GH.sprite.tile(q.word.n));
-      card.appendChild(fig);
-      var opts = el('div', 'options');
-      q.options.forEach(function(o){ opts.appendChild(textOption(o.de, o, pick)); });
-      card.appendChild(opts);
-      return;
-    }
-
-    if (shape === 'word'){
-      card.appendChild(el('p', 'vword', q.word.de));
-      var grid = el('div', 'vpics');
-      q.options.forEach(function(o){ grid.appendChild(tile(o, pick)); });
-      card.appendChild(grid);
-      return;
-    }
-
-    /* mean */
-    var k = meaningKey();
-    card.appendChild(el('p', 'vword', q.word.de));
-    var mo = el('div', 'options');
-    q.options.forEach(function(o){ mo.appendChild(textOption(o[k] || o.en, o, pick)); });
-    card.appendChild(mo);
-  }
-
-  function paintSentence(card, q){
-    var cut = blankOut(q.sentence, q.word);
-    if (state.senShape === 'pic' || !cut.ok){
-      card.appendChild(el('p', 'sentence', q.sentence.de));
-      var tr = translationOf(q.sentence);
-      if (tr) card.appendChild(el('p', 'translation', tr));
-      var grid = el('div', 'vpics');
-      q.options.forEach(function(o){ grid.appendChild(tile(o, answerSentence)); });
-      card.appendChild(grid);
-      return;
-    }
-
-    var p = el('p', 'sentence');
-    p.appendChild(document.createTextNode(cut.before));
-    p.appendChild(el('span', 'slot' + (state.revealed ? ' filled' : ''),
-                     state.revealed ? cut.blank : '???'));
-    p.appendChild(document.createTextNode(cut.after));
-    card.appendChild(p);
-    var tr2 = translationOf(q.sentence);
-    if (tr2) card.appendChild(el('p', 'translation', tr2));
-    var opts = el('div', 'options');
-    q.options.forEach(function(o){ opts.appendChild(textOption(o.de, o, answerSentence)); });
-    card.appendChild(opts);
-  }
-
-  function translationOf(sen){
-    var lang = GH.i18n.lang();
-    if (lang === 'de') return '';
-    return sen[lang] || '';
-  }
-
-  function paintDone(){
-    var box = el('div', 'done');
-    box.appendChild(el('h2', null, t('doneTitle')));
-    box.appendChild(el('p', null, t('vocabDone', { n:state.set.length })));
-    var acts = el('div', 'done-actions');
-    var again = el('button', 'btn btn-primary', t('again'));
-    again.type = 'button';
-    again.addEventListener('click', function(){ start(state.set); });
-    var hub = el('button', 'btn btn-ghost', t('toHub'));
-    hub.type = 'button';
-    hub.addEventListener('click', function(){ state.onExit(); });
-    acts.appendChild(again); acts.appendChild(hub);
-    box.appendChild(acts);
-    host.appendChild(box);
-  }
-
-  /* ---------- answering ---------- */
-
-  function current(){
-    if (state.phase === 'words'){
-      for (var i = 0; i < state.words.length; i++) if (!state.words[i].done) return state.words[i];
-      return null;
-    }
-    return state.sentences[state.sIndex] || null;
-  }
-
-  function answerWord(picked){
-    var q = current();
-    if (!q) return;
-    if (picked.n === q.word.n){
-      q.done = true;
-      state.feedback = ''; state.autoSpeak = false;
-      GH.speech.say(q.word.de);
-      if (!current()){                       /* every word cleared */
-        state.phase = 'sentences';
-        state.sIndex = 0;
-        state.sentences = sentenceQuestions(state.set, state.senShape);
-      }
-      paint();
-    } else {
-      /* a miss goes to the back of the queue rather than being skipped */
-      state.feedback = t('vocabRetry', { w:q.word.de });
-      state.feedbackKind = 'miss';
-      var idx = state.words.indexOf(q);
-      state.words.splice(idx, 1);
-      state.words.push(q);
-      paint();
-    }
-  }
-
-  function answerSentence(picked){
-    var q = current();
-    if (!q) return;
-    if (picked.n === q.word.n){
-      state.revealed = true;
-      state.feedback = '';
-      paint();
-      GH.speech.say(q.sentence.de, function(){
-        state.revealed = false;
-        state.sIndex++;
-        paint();
-      });
-    } else {
-      state.feedback = t('vocabRetry', { w:q.word.de });
-      state.feedbackKind = 'miss';
-      paint();
-    }
-  }
-
-  function rebuild(){
-    if (state.phase === 'words'){
-      var cleared = {};
-      state.words.forEach(function(x){ if (x.done) cleared[x.word.n] = true; });
-      state.words = wordQuestions(state.set, state.wordShape);
-      state.words.forEach(function(x){ if (cleared[x.word.n]) x.done = true; });
-    } else {
-      state.sentences = sentenceQuestions(state.set, state.senShape);
-      state.sIndex = 0;
-    }
-    state.feedback = '';
-    paint();
-  }
-
-  function start(set){
-    state.set = set;
-    state.phase = 'words';
-    state.words = wordQuestions(set, state.wordShape);
-    state.sentences = [];
-    state.sIndex = 0;
-    state.revealed = false;
-    state.feedback = '';
-    paint();
-  }
-
-  function mount(container, config){
-    host = container;
-    state = {
-      title:config.title,
-      set:config.set,
-      onExit:config.onExit,
-      wordShape:'pic',
-      senShape:'blank',
-      phase:'words',
-      words:[], sentences:[], sIndex:0,
-      revealed:false, feedback:'', feedbackKind:'', autoSpeak:false
-    };
-    start(config.set);
-  }
-
-  return { mount:mount, setsFor:setsFor, wordsIn:wordsIn };
-})();
+/* Vocabulary-only topics. Sections 1, 2 and 4 have no sentences in
+   these, so they are kept out of GH_BANK.categories and listed here
+   instead — the vocab sets and the word list read both lists, the
+   sentence sections read only the original eight. */
+window.GH_VOCAB_CATS = [
+  { id:'colors',   glyph:'🎨', ru:'Цвета',    de:'Farben',      en:'Colors' },
+  { id:'describe', glyph:'📏', ru:'Описания', de:'Beschreibung', en:'Descriptions' },
+  { id:'time',     glyph:'🕐', ru:'Время',    de:'Zeit',        en:'Time' },
+  { id:'bath',     glyph:'🚿', ru:'Ванная',   de:'Badezimmer',  en:'Bathroom' },
+  { id:'kitchen',  glyph:'🍳', ru:'Кухня',    de:'Küche',       en:'Kitchen' },
+  { id:'places',   glyph:'🏬', ru:'Места',    de:'Orte',        en:'Places' }
+];
