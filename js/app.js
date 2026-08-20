@@ -39,8 +39,86 @@ GH.app = (function(){
     return b;
   }
 
+  /* Sections register themselves for the jump bar as they are built, so
+     the bar always matches what is actually on the page — a section that
+     gets skipped (no data yet) never shows up as a dead link. */
+  var jumps = [];
+
+  /* Topic filter, following the same rules as the pink math org list:
+     a set of active topics OR-matched together, "All" as a real state
+     that clears the rest, and the set emptying out re-activates "All"
+     rather than leaving nothing selected.
+
+     The chips stay collapsed behind a button — seventeen topics is far
+     too much furniture to leave on screen above the content. */
+  var activeCats = {};
+  var catCount = 0;
+  var filterOpen = false;
+
+  function keep(catId){
+    return catCount === 0 || !!activeCats[catId];
+  }
+
+  function allTopics(){
+    return (GH_BANK.categories || []).concat(window.GH_VOCAB_CATS || []);
+  }
+
+  function toggleCat(id){
+    if (id === 'all'){
+      activeCats = {}; catCount = 0;
+    } else if (activeCats[id]){
+      delete activeCats[id]; catCount--;
+    } else {
+      activeCats[id] = true; catCount++;
+    }
+    hub();
+  }
+
+  function filterBlock(){
+    var wrap = el('div', 'filterwrap');
+
+    var toggle = el('button', 'filter-toggle' + (catCount ? ' has' : ''));
+    toggle.type = 'button';
+    toggle.setAttribute('aria-expanded', filterOpen ? 'true' : 'false');
+    toggle.appendChild(el('span', null, t('filterBy')));
+    toggle.appendChild(el('span', 'filter-caret', filterOpen ? '▴' : '▾'));
+    if (catCount){
+      toggle.appendChild(el('span', 'filter-badge', catCount));
+    }
+    toggle.addEventListener('click', function(){
+      filterOpen = !filterOpen;
+      hub();
+    });
+    wrap.appendChild(toggle);
+
+    if (!filterOpen) return wrap;
+
+    var chips = el('div', 'chips');
+
+    var all = el('button', 'chip' + (catCount ? '' : ' on'), t('allTopics'));
+    all.type = 'button';
+    all.setAttribute('aria-pressed', catCount ? 'false' : 'true');
+    all.addEventListener('click', function(){ toggleCat('all'); });
+    chips.appendChild(all);
+
+    allTopics().forEach(function(c){
+      var on = !!activeCats[c.id];
+      var b = el('button', 'chip' + (on ? ' on' : ''));
+      b.type = 'button';
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.appendChild(el('span', 'chip-glyph', c.glyph));
+      b.appendChild(document.createTextNode(' ' + GH.i18n.pick(c)));
+      b.addEventListener('click', function(){ toggleCat(c.id); });
+      chips.appendChild(b);
+    });
+    wrap.appendChild(chips);
+    wrap.appendChild(el('p', 'filter-hint', t('filterHint')));
+    return wrap;
+  }
+
   function section(headKey, count){
     var wrap = el('section', 'hub-section');
+    wrap.id = 'sec-' + headKey;
     var head = el('div', 'hub-head');
     head.appendChild(el('h2', null, t(headKey)));
     if (count) head.appendChild(el('span', 'hub-count', count));
@@ -48,13 +126,31 @@ GH.app = (function(){
     var tiles = el('div', 'tiles');
     wrap.appendChild(tiles);
     wrap._tiles = tiles;
+    jumps.push({ id: wrap.id, key: headKey, node: wrap });
     return wrap;
+  }
+
+  /* Built last but inserted at the top, once every section is known. */
+  function jumpBar(){
+    if (jumps.length < 2) return null;
+    var bar = el('nav', 'jumpbar');
+    bar.setAttribute('aria-label', t('jumpTo'));
+    jumps.forEach(function(j){
+      var b = el('button', 'jump', t(j.key));
+      b.type = 'button';
+      b.addEventListener('click', function(){
+        if (j.node.scrollIntoView) j.node.scrollIntoView({ behavior:'smooth', block:'start' });
+      });
+      bar.appendChild(b);
+    });
+    return bar;
   }
 
   function hub(){
     GH.speech.stop();
     GH.app.redraw = hub;
     view.textContent = '';
+    jumps = [];
 
     view.appendChild(el('p', 'eyebrow', 'Deutsch · Русский · English'));
     view.appendChild(el('h1', null, t('hubTitle')));
@@ -63,7 +159,7 @@ GH.app = (function(){
     /* sentences by topic */
     var cats = GH_BANK.categories || [];
     var sec = section('sentencesHead', t('byTopic'));
-    cats.forEach(function(cat){
+    cats.filter(function(c){ return keep(c.id); }).forEach(function(cat){
       var list = sentencesIn(cat.id);
       var blanks = list.reduce(function(sum, s){ return sum + countBlanks(s); }, 0);
       sec._tiles.appendChild(tile(
@@ -74,15 +170,13 @@ GH.app = (function(){
         list.length ? function(){ openSentences(cat); } : null
       ));
     });
-    view.appendChild(sec);
+    if (sec._tiles.children.length) view.appendChild(sec); else jumps.pop();
 
     /* stories */
     var stories = GH_BANK.stories || [];
-    var sec2 = section('storiesHead', t('storiesN', { n:stories.length }));
-    if (!stories.length){
-      sec2._tiles.appendChild(el('p', 'empty', t('noneYet')));
-    }
-    stories.forEach(function(story){
+    var shown2 = stories.filter(function(x){ return keep(x.cat); });
+    var sec2 = section('storiesHead', t('storiesN', { n:shown2.length }));
+    shown2.forEach(function(story){
       var blanks = (story.sentences || []).reduce(function(sum, s){ return sum + countBlanks(s); }, 0);
       var cat = cats.filter(function(c){ return c.id === story.cat; })[0];
       sec2._tiles.appendChild(tile(
@@ -93,14 +187,14 @@ GH.app = (function(){
         function(){ openStory(story); }
       ));
     });
-    view.appendChild(sec2);
+    if (sec2._tiles.children.length) view.appendChild(sec2); else jumps.pop();
 
     /* vocab sets: words first, then the sentences that use them */
     if (window.GH_VOCAB && GH.vocab){
       var sec25 = section('vocabHead', t('byTopic'));
       var any = false;
       /* the original eight plus the vocabulary-only topics */
-      cats.concat(window.GH_VOCAB_CATS || []).forEach(function(cat){
+      allTopics().filter(function(c){ return keep(c.id); }).forEach(function(cat){
         GH.vocab.setsFor(cat.id).forEach(function(set, i){
           any = true;
           sec25._tiles.appendChild(tile(
@@ -112,13 +206,14 @@ GH.app = (function(){
           ));
         });
       });
-      if (any) view.appendChild(sec25);
+      if (any) view.appendChild(sec25); else jumps.pop();
     }
 
     /* Section 4: longer stories, one blank per sentence */
     if (window.GH_LONG && GH_LONG.length){
-      var sec4 = section('longStoriesHead', t('storiesN', { n:GH_LONG.length }));
-      GH_LONG.forEach(function(story){
+      var shown4 = GH_LONG.filter(function(x){ return keep(x.cat); });
+      var sec4 = section('longStoriesHead', t('storiesN', { n:shown4.length }));
+      shown4.forEach(function(story){
         var c = cats.filter(function(x){ return x.id === story.cat; })[0];
         sec4._tiles.appendChild(tile(
           '📚',
@@ -128,7 +223,7 @@ GH.app = (function(){
           function(){ openLongStory(story); }
         ));
       });
-      view.appendChild(sec4);
+      if (sec4._tiles.children.length) view.appendChild(sec4); else jumps.pop();
     }
 
     /* the word list — reference, not an exercise */
@@ -155,6 +250,19 @@ GH.app = (function(){
       });
       view.appendChild(sec3);
     }
+
+    /* Nothing matched the filter at all. */
+    if (!jumps.length){
+      view.appendChild(el('p', 'empty', t('nothingHere')));
+    }
+
+    /* Built last so every section is known, inserted first so they sit
+       above them. Filter row first, then the jump row. */
+    var anchor = jumps.length ? jumps[0].node : null;
+    var jb = jumpBar();
+    if (jb && anchor) view.insertBefore(jb, anchor);
+    var fb = filterBlock();
+    view.insertBefore(fb, jb || anchor || null);
   }
 
   function openLongStory(story){
