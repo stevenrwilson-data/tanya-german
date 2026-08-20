@@ -314,9 +314,15 @@ GH.listenPick = (function(){
   return { open:open };
 })();
 
-/* on the hub as its own row */
-if (window.GH && GH.app && GH.app.register){
-  GH.app.register({
+/* Register on the hub.
+
+   app.js loads AFTER this file, so GH.app does not exist yet — checking
+   for it here and giving up silently is what kept this game off the hub.
+   app.js boots on DOMContentLoaded and our listener is added first, so
+   registering there runs before the hub is drawn regardless of the order
+   the script tags happen to be in. */
+(function(){
+  var entry = {
     id:'listen-pick',
     glyph:'🎧',
     name:{ ru:'Слушай и выбирай', de:'Hören und wählen', en:'Listen and pick' },
@@ -324,5 +330,13 @@ if (window.GH && GH.app && GH.app.register){
           de:'Das Bild zum Gehörten',
           en:'The picture for what you heard' },
     open:GH.listenPick.open
-  });
-}
+  };
+
+  function register(){
+    if (window.GH && GH.app && GH.app.register) GH.app.register(entry);
+  }
+
+  if (window.GH && GH.app && GH.app.register) register();
+  else if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', register);
+  else register();
+})();
