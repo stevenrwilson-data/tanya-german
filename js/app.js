@@ -136,8 +136,14 @@ GH.app = (function(){
     var bar = el('nav', 'jumpbar');
     bar.setAttribute('aria-label', t('jumpTo'));
     jumps.forEach(function(j){
-      var b = el('button', 'jump', t(j.key));
+      var b = el('button', 'jump');
       b.type = 'button';
+      /* full label on a wide screen, just the section number on a phone;
+         CSS picks which one shows */
+      var full = t(j.key);
+      var parts = full.split(' · ');
+      b.appendChild(el('span', 'jump-long', full));
+      b.appendChild(el('span', 'jump-short', parts.length > 1 ? parts[0] : full));
       b.addEventListener('click', function(){
         if (j.node.scrollIntoView) j.node.scrollIntoView({ behavior:'smooth', block:'start' });
       });
