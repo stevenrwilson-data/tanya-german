@@ -95,6 +95,54 @@ GH.app = (function(){
     });
     view.appendChild(sec2);
 
+    /* vocab sets: words first, then the sentences that use them */
+    if (window.GH_VOCAB && GH.vocab){
+      var sec25 = section('vocabHead', t('byTopic'));
+      var any = false;
+      /* the original eight plus the vocabulary-only topics */
+      cats.concat(window.GH_VOCAB_CATS || []).forEach(function(cat){
+        GH.vocab.setsFor(cat.id).forEach(function(set, i){
+          any = true;
+          sec25._tiles.appendChild(tile(
+            cat.glyph,
+            GH.i18n.pick(cat) + ' ' + (i + 1),
+            t('vocabSetN', { n:set.length }),
+            set.slice(0, 3).map(function(w){ return w.de; }).join(' · '),
+            function(){ openVocab(cat, set, i + 1); }
+          ));
+        });
+      });
+      if (any) view.appendChild(sec25);
+    }
+
+    /* Section 4: longer stories, one blank per sentence */
+    if (window.GH_LONG && GH_LONG.length){
+      var sec4 = section('longStoriesHead', t('storiesN', { n:GH_LONG.length }));
+      GH_LONG.forEach(function(story){
+        var c = cats.filter(function(x){ return x.id === story.cat; })[0];
+        sec4._tiles.appendChild(tile(
+          '📚',
+          GH.i18n.pick(story.title),
+          t('itemsN', { n:story.sentences.length }),
+          c ? GH.i18n.pick(c) : null,
+          function(){ openLongStory(story); }
+        ));
+      });
+      view.appendChild(sec4);
+    }
+
+    /* the word list — reference, not an exercise */
+    if (window.GH_VOCAB && GH.reference){
+      var secR = section('refHead');
+      secR._tiles.appendChild(tile('📖', t('refTitle'),
+        t('refCount', { n:GH_VOCAB.length }), null, function(){
+          GH.speech.stop();
+          view.textContent = '';
+          GH.reference.open(view, hub);
+        }));
+      view.appendChild(secR);
+    }
+
     /* anything registered later */
     if (extras.length){
       var sec3 = section('gamesHead');
@@ -107,6 +155,31 @@ GH.app = (function(){
       });
       view.appendChild(sec3);
     }
+  }
+
+  function openLongStory(story){
+    var list = (story.sentences || []).map(function(s){
+      return { de:s.de, ru:s.ru, en:s.en, blanks:s.blanks, img:s.img, cat:story.cat };
+    });
+    view.textContent = '';
+    GH.fillBlank.mount(view, {
+      title:GH.i18n.pick(story.title),
+      subtitle:t('longStoriesHead'),
+      cat:story.cat,
+      sentences:list,
+      ordered:true,
+      onExit:hub
+    });
+  }
+
+  function openVocab(cat, set, num){
+    GH.speech.stop();
+    view.textContent = '';
+    GH.vocab.mount(view, {
+      title:GH.i18n.pick(cat) + ' ' + num,
+      set:set,
+      onExit:hub
+    });
   }
 
   function openSentences(cat){
