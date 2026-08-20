@@ -804,3 +804,76 @@ h2{
 .rg-f{background:rgba(180,67,108,.18);color:#B4436C}
 .rg-n{background:rgba(92,122,58,.20);color:#5C7A3A}
 .rg-pl{background:rgb(var(--mauve-rgb) / .22);color:var(--ink-soft)}
+
+/* --- jump bar ----------------------------------------------- */
+
+.jumpbar{
+  position:sticky;top:0;z-index:20;
+  display:flex;gap:6px;overflow-x:auto;
+  padding:10px 0;margin:6px 0 4px;
+  background:linear-gradient(var(--page) 68%, rgb(var(--paper-rgb) / 0));
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.jumpbar::-webkit-scrollbar{display:none}
+
+.jump{
+  flex:0 0 auto;
+  border:1.5px solid rgb(var(--mauve-rgb) / .45);
+  background:rgb(var(--paper-rgb) / .92);
+  color:var(--ink);
+  font:600 .78rem/1 var(--ff-ui);
+  padding:11px 14px;border-radius:999px;cursor:pointer;
+  white-space:nowrap;
+  -webkit-tap-highlight-color:transparent;
+  transition:background .12s ease, border-color .12s ease;
+}
+.jump:hover{border-color:var(--sand-deep)}
+.jump:active{background:var(--liver);color:var(--on-dark);border-color:var(--liver)}
+
+.hub-section{scroll-margin-top:64px}
+
+/* --- topic filter ------------------------------------------- */
+
+.filterwrap{margin:14px 0 2px}
+
+.filter-toggle{
+  display:inline-flex;align-items:center;gap:8px;
+  border:1.5px solid rgb(var(--mauve-rgb) / .45);
+  background:rgb(var(--paper-rgb) / .9);
+  color:var(--ink);
+  font:600 .8rem/1 var(--ff-ui);
+  padding:12px 16px;border-radius:999px;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.filter-toggle:hover{border-color:var(--sand-deep)}
+.filter-toggle.has{background:var(--liver);color:var(--on-dark);border-color:var(--liver)}
+.filter-caret{font-size:.7rem;opacity:.8}
+.filter-badge{
+  background:var(--flame);color:var(--on-flame);
+  font:700 .68rem/1 var(--ff-ui);
+  padding:4px 7px;border-radius:999px;
+}
+
+.chips{
+  display:flex;flex-wrap:wrap;gap:6px;
+  margin:12px 0 0;
+}
+.chip{
+  border:1.5px solid rgb(var(--mauve-rgb) / .4);
+  background:transparent;
+  color:var(--ink-soft);
+  font:600 .76rem/1 var(--ff-ui);
+  padding:10px 13px;border-radius:999px;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  transition:background .12s ease, color .12s ease, border-color .12s ease;
+}
+.chip-glyph{font-size:.9rem}
+.chip:hover{border-color:var(--sand-deep)}
+.chip.on{background:var(--flame);color:var(--on-flame);border-color:var(--flame)}
+
+.filter-hint{
+  font:italic 400 .78rem/1.4 var(--ff-ui);
+  color:var(--ink-soft);opacity:.75;
+  margin:10px 0 0;
+}
