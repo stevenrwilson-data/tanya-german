@@ -702,3 +702,105 @@ h2{
   opacity:.55;
   text-decoration:line-through;
 }
+
+/* --- listen and pick ---------------------------------------- */
+
+.lp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:14px}
+.lp-grid.lp-nine{grid-template-columns:repeat(3,1fr)}
+@media (min-width:561px){
+  .lp-grid{grid-template-columns:repeat(4,1fr)}
+  .lp-grid.lp-nine{grid-template-columns:repeat(3,1fr);max-width:520px;margin-inline:auto}
+}
+
+.lp-pic{
+  padding:5px;border:1.5px solid rgb(var(--sand-rgb) / .32);
+  background:rgb(var(--paper-rgb) / .92);
+  border-radius:var(--r-md);cursor:pointer;line-height:0;
+  transition:transform .12s ease, border-color .12s ease, opacity .2s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.lp-pic .sprite{height:118px;border-radius:var(--r-sm)}
+.lp-grid.lp-nine .lp-pic .sprite{height:96px}
+@media (min-width:561px){
+  .lp-pic .sprite{height:150px}
+  .lp-grid.lp-nine .lp-pic .sprite{height:140px}
+}
+.lp-pic:hover:not(:disabled){transform:translateY(-2px);border-color:var(--sand)}
+.lp-pic:active:not(:disabled){transform:scale(.97)}
+.lp-pic:disabled{opacity:.45;cursor:default}
+.lp-pic.is-right{border-color:var(--mint);border-width:3px;padding:3px}
+.lp-pic.is-dim{opacity:.32}
+
+.lp-clock{height:5px;border-radius:999px;overflow:hidden;
+  background:rgb(var(--shade-rgb) / .22);margin:12px 0 2px}
+.lp-clock-bar{height:100%;background:var(--flame);border-radius:999px;
+  transition:width .1s linear}
+
+.lp-hint{color:rgb(var(--sand-rgb) / .8);font-size:.9rem;text-align:center;margin:14px 0 0}
+.lp-plays{color:rgb(var(--sand-rgb) / .7);font-size:.78rem;
+  text-transform:uppercase;letter-spacing:.05em;align-self:center}
+.lp-reveal{margin-top:12px}
+.lp-word{color:var(--mint);font-family:var(--ff-display);
+  font-size:1.15rem;text-align:center;margin:4px 0 0}
+.lp-play:disabled{opacity:.45;cursor:default}
+
+/* --- word list ---------------------------------------------- */
+
+.ref-views{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 10px}
+.ref-view{
+  border:1.5px solid rgb(var(--mauve-rgb) / .45);
+  background:rgb(var(--paper-rgb) / .8);
+  color:var(--ink-soft);
+  font:600 .8rem/1 var(--ff-ui);
+  padding:10px 13px;border-radius:999px;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.ref-view[aria-pressed="true"]{
+  background:var(--liver);color:var(--on-dark);border-color:var(--liver);
+}
+.ref-hint{color:var(--ink-soft);font-size:.82rem;margin:0 0 12px}
+
+.ref-list{display:flex;flex-direction:column;gap:5px}
+
+.ref-group{
+  display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;
+  margin:20px 0 6px;padding-bottom:6px;
+  border-bottom:1.5px solid rgb(var(--mauve-rgb) / .35);
+}
+.ref-group-name{font:600 1.05rem/1.2 var(--ff-display);color:var(--ink)}
+.ref-group-count{
+  font:700 .7rem/1 var(--ff-ui);color:var(--on-dark);
+  background:var(--liver);padding:4px 8px;border-radius:999px;
+}
+.ref-group-note{font-size:.78rem;color:var(--ink-soft);font-style:italic}
+
+.ref-row{
+  display:flex;align-items:center;gap:11px;width:100%;text-align:left;
+  padding:7px 9px;border:1.5px solid rgb(var(--mauve-rgb) / .28);
+  background:rgb(var(--paper-rgb) / .9);
+  border-radius:var(--r-md);cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.ref-row:hover{border-color:var(--sand-deep)}
+.ref-row:active{transform:scale(.995)}
+.ref-thumb{flex:0 0 42px;line-height:0}
+.ref-thumb .sprite{height:60px;border-radius:6px}
+.ref-body{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1}
+.ref-de{font:500 1.02rem/1.25 var(--ff-display);color:var(--ink)}
+.ref-art{font-weight:700}
+.art-der{color:#2F6FA8}
+.art-die{color:#B4436C}
+.art-das{color:#5C7A3A}
+.ref-gloss{font-size:.86rem;color:var(--ink-soft)}
+.ref-gloss2{font-size:.76rem;color:var(--ink-soft);opacity:.75;font-style:italic}
+.ref-num{font:600 .66rem/1 var(--ff-ui);color:var(--ink-soft);opacity:.6;margin-top:2px}
+
+/* russian gender tag in the word list */
+.ref-rg{
+  display:inline-block;margin-left:7px;padding:1px 5px;border-radius:4px;
+  font:700 .62rem/1.5 var(--ff-ui);letter-spacing:.06em;vertical-align:1px;
+}
+.rg-m{background:rgba(47,111,168,.18);color:#2F6FA8}
+.rg-f{background:rgba(180,67,108,.18);color:#B4436C}
+.rg-n{background:rgba(92,122,58,.20);color:#5C7A3A}
+.rg-pl{background:rgb(var(--mauve-rgb) / .22);color:var(--ink-soft)}
