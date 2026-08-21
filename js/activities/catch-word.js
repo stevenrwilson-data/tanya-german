@@ -134,6 +134,8 @@ GH.catchWord = (function(){
     state.escaped = 0;
     state.wrong = 0;
     state.spawned = 0;
+    state.missedWords = [];
+    state.wrongWords = [];
     state.slots = new Array(SLOTS);
 
     /* Up to nine pictures from the topic, so she sees what it holds before
@@ -201,6 +203,7 @@ GH.catchWord = (function(){
     if (!card.hit){ paintSlot(card.slot); return; }
 
     state.escaped++;
+    state.missedWords.push(card.word);
     state.hearts--;
     flash(card.slot, 'missed', card.word.de);
     paintStatus();
@@ -219,6 +222,7 @@ GH.catchWord = (function(){
       GH.speech.say(card.word.de);
     } else {
       state.wrong++;
+      state.wrongWords.push(card.word);
       state.hearts--;
       flash(card.slot, 'wrong', card.word.de);
     }
@@ -416,16 +420,67 @@ GH.catchWord = (function(){
     host.appendChild(el('p', 'cw-rules', t('cwRules')));
   }
 
+  function statTile(n, labelKey, kind){
+    var b = el('div', 'cw-stat cw-stat-' + kind);
+    b.appendChild(el('span', 'cw-stat-n', n));
+    b.appendChild(el('span', 'cw-stat-l', t(labelKey)));
+    return b;
+  }
+
+  /* A row of the words behind a number, with their pictures — tapping one
+     speaks it. The point of losing a round is finding out which words you
+     could not place, so the end screen shows them instead of a bare score. */
+  function wordStrip(list, headKey, kind){
+    if (!list.length) return null;
+    var wrap = el('div', 'cw-review');
+    wrap.appendChild(el('p', 'cw-review-head cw-review-' + kind, t(headKey)));
+    var row = el('div', 'cw-review-row');
+    var seen = {};
+    list.forEach(function(w){
+      if (seen[w.n]) return;
+      seen[w.n] = true;
+      var b = el('button', 'cw-review-item');
+      b.type = 'button';
+      b.appendChild(GH.sprite.tile(w.n));
+      b.appendChild(el('span', 'cw-review-de', w.de));
+      var lang = GH.i18n.lang();
+      if (lang !== 'de') b.appendChild(el('span', 'cw-review-tr', (lang === 'ru' ? w.ru : w.en) || w.en));
+      b.addEventListener('click', function(){ GH.speech.say(w.de); });
+      row.appendChild(b);
+    });
+    wrap.appendChild(row);
+    return wrap;
+  }
+
   function paintDone(){
     var lost = state.hearts <= 0;
     var perfect = !lost && state.wrong === 0 && state.escaped === 0;
+    var seen = state.caught + state.wrong + state.escaped;
+    var pct = seen ? Math.round((state.caught / (state.caught + state.escaped || 1)) * 100) : 0;
 
-    var box = el('div', 'done');
-    box.appendChild(el('h2', null, lost ? t('cwOut') : (perfect ? t('cwPerfect') : t('doneTitle'))));
-    box.appendChild(el('p', null, t('cwSummary', {
-      caught:state.caught, wrong:state.wrong, escaped:state.escaped
-    })));
-    box.appendChild(el('p', 'cw-final', t('cwScore', { n:state.score })));
+    var box = el('div', 'done cw-done' + (perfect ? ' is-perfect' : (lost ? ' is-lost' : '')));
+
+    box.appendChild(el('div', 'cw-done-glyph', perfect ? '🏆' : (lost ? '💔' : '🐹')));
+    box.appendChild(el('h2', null, perfect ? t('cwPerfect') : (lost ? t('cwOut') : t('doneTitle'))));
+
+    var chip = el('p', 'cw-done-topic');
+    chip.appendChild(el('span', null, state.topic.glyph + ' ' + GH.i18n.pick(state.topic)));
+    box.appendChild(chip);
+
+    var stats = el('div', 'cw-stats');
+    stats.appendChild(statTile(state.caught,  'cwCaught',  'good'));
+    stats.appendChild(statTile(state.wrong,   'cwWrong',   'bad'));
+    stats.appendChild(statTile(state.escaped, 'cwMissed',  'bad'));
+    box.appendChild(stats);
+
+    if (state.caught + state.escaped){
+      box.appendChild(el('p', 'cw-accuracy', t('cwAccuracy', { n:pct })));
+    }
+
+    var m = wordStrip(state.missedWords, 'cwTheseGotAway', 'missed');
+    if (m) box.appendChild(m);
+    var w = wordStrip(state.wrongWords, 'cwTheseWereNot', 'wrong');
+    if (w) box.appendChild(w);
 
     var acts = el('div', 'done-actions');
     var again = el('button', 'btn btn-primary', t('again'));
