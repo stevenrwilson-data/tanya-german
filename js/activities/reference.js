@@ -91,8 +91,14 @@ GH.reference = (function(){
     { id:'number', key:'refByNumber' }
   ];
 
-  function groups(view){
+  function pool(){
     var V = (window.GH_VOCAB || []).slice();
+    if (!state.catCount) return V;
+    return V.filter(function(v){ return state.cats[v.cat]; });
+  }
+
+  function groups(view){
+    var V = pool();
     var out = [];
 
     function push(label, items, note){
@@ -177,6 +183,64 @@ GH.reference = (function(){
     return out;
   }
 
+  /* Same collapsed-chip filter as the hub. Applied to the pool before
+     grouping rather than to the rendered rows, so it narrows the list
+     whichever way it is currently sorted — filtering to Кухня and then
+     switching to A–Z gives the kitchen words alphabetically, not the
+     whole vocabulary again. */
+  function allTopics(){
+    return (GH_BANK.categories || []).concat(window.GH_VOCAB_CATS || []);
+  }
+
+  function toggleCat(id){
+    if (id === 'all'){
+      state.cats = {}; state.catCount = 0;
+    } else if (state.cats[id]){
+      delete state.cats[id]; state.catCount--;
+    } else {
+      state.cats[id] = true; state.catCount++;
+    }
+    paint();
+  }
+
+  function filterBlock(){
+    var wrap = el('div', 'filterwrap');
+
+    var toggle = el('button', 'filter-toggle' + (state.catCount ? ' has' : ''));
+    toggle.type = 'button';
+    toggle.setAttribute('aria-expanded', state.filterOpen ? 'true' : 'false');
+    toggle.appendChild(el('span', null, t('filterBy')));
+    toggle.appendChild(el('span', 'filter-caret', state.filterOpen ? '▴' : '▾'));
+    if (state.catCount) toggle.appendChild(el('span', 'filter-badge', state.catCount));
+    toggle.addEventListener('click', function(){
+      state.filterOpen = !state.filterOpen;
+      paint();
+    });
+    wrap.appendChild(toggle);
+
+    if (!state.filterOpen) return wrap;
+
+    var chips = el('div', 'chips');
+    var all = el('button', 'chip' + (state.catCount ? '' : ' on'), t('allTopics'));
+    all.type = 'button';
+    all.addEventListener('click', function(){ toggleCat('all'); });
+    chips.appendChild(all);
+
+    allTopics().forEach(function(c){
+      var on = !!state.cats[c.id];
+      var b = el('button', 'chip' + (on ? ' on' : ''));
+      b.type = 'button';
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.appendChild(el('span', 'chip-glyph', c.glyph));
+      b.appendChild(document.createTextNode(' ' + GH.i18n.pick(c)));
+      b.addEventListener('click', function(){ toggleCat(c.id); });
+      chips.appendChild(b);
+    });
+    wrap.appendChild(chips);
+    wrap.appendChild(el('p', 'filter-hint', t('filterHint')));
+    return wrap;
+  }
+
   /* ---------- painting ---------- */
 
   function row(v){
@@ -234,6 +298,8 @@ GH.reference = (function(){
     head.appendChild(titles);
     host.appendChild(head);
 
+    host.appendChild(filterBlock());
+
     var picker = el('div', 'ref-views');
     VIEWS.forEach(function(view){
       var b = el('button', 'ref-view', t(view.key));
@@ -244,7 +310,10 @@ GH.reference = (function(){
     });
     host.appendChild(picker);
 
-    host.appendChild(el('p', 'ref-hint', t('refTapHint')));
+    var shown = pool().length, total = (window.GH_VOCAB || []).length;
+    host.appendChild(el('p', 'ref-hint',
+      (shown === total ? t('refTapHint')
+                       : t('refShowing', { i:shown, n:total }) + ' · ' + t('refTapHint'))));
 
     var list = el('div', 'ref-list');
     groups(state.view).forEach(function(g){
@@ -260,7 +329,7 @@ GH.reference = (function(){
 
   function open(container, onExit){
     host = container;
-    state = { onExit:onExit, view:'topic' };
+    state = { onExit:onExit, view:'topic', cats:{}, catCount:0, filterOpen:false };
     paint();
   }
 
