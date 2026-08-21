@@ -32,6 +32,19 @@ GH.reference = (function(){
     return (w === 'der' || w === 'die' || w === 'das') ? w : null;
   }
 
+  /* An entry can start with an article without being a noun:
+     'das Gesicht waschen' and 'die Augen schließen' are verb phrases,
+     'der Zug hat Verspätung' is a clause. German capitalises nouns and
+     not infinitives, so the last word decides it, and a length cap of
+     three rules out the clauses. Without this the gender groupings would
+     happily try to compare the gender of "to wash the face". */
+  function isNounEntry(de){
+    if (!article(de)) return false;
+    var p = de.split(/\s+/);
+    if (p.length > 3) return false;
+    return /^[A-ZÄÖÜ]/.test(p[p.length - 1]);
+  }
+
   function bareNoun(de){
     var a = article(de);
     return a ? de.split(' ').slice(1).join(' ') : de;
@@ -72,7 +85,7 @@ GH.reference = (function(){
 
   function genderMatch(v){
     var a = article(v.de);
-    if (!a || !v.rg) return null;
+    if (!a || !v.rg || !isNounEntry(v.de)) return null;
     if (v.rg === 'PL' || isPlural(v)) return null;
     return DE_TO_RU[a] === v.rg ? 'same' : 'differ';
   }
@@ -106,7 +119,7 @@ GH.reference = (function(){
     }
 
     if (view === 'topic'){
-      (GH_BANK.categories || []).concat(window.GH_VOCAB_CATS || []).forEach(function(c){
+      (GH_BANK.categories || []).forEach(function(c){
         push(GH.i18n.pick(c), V.filter(function(v){ return v.cat === c.id; }));
       });
       return out;
@@ -137,7 +150,7 @@ GH.reference = (function(){
         push(a, hits.filter(function(v){ return article(v.de) === a; }),
              t(want === 'same' ? 'refSameNote' : 'refDiffNote'));
       });
-      var missing = V.filter(function(v){ return article(v.de) && !v.rg; }).length;
+      var missing = V.filter(function(v){ return isNounEntry(v.de) && !v.rg; }).length;
       if (missing) push(t('refNoRussian'), [], t('refNoRussianNote', { n:missing }));
       return out;
     }
@@ -188,8 +201,12 @@ GH.reference = (function(){
      whichever way it is currently sorted — filtering to Кухня and then
      switching to A–Z gives the kitchen words alphabetically, not the
      whole vocabulary again. */
+  /* One topic list for the whole app. Every topic has both sentences and
+     words now, so there is nothing to filter out — the three that used to
+     group sentences only were folded into the vocabulary topics their
+     images already belonged to. */
   function allTopics(){
-    return (GH_BANK.categories || []).concat(window.GH_VOCAB_CATS || []);
+    return (GH_BANK.categories || []).slice();
   }
 
   function toggleCat(id){
@@ -243,15 +260,22 @@ GH.reference = (function(){
 
   /* ---------- painting ---------- */
 
+  /* A row is two targets, not one: the picture opens the lightbox, the
+     text speaks the word. Nested buttons are invalid HTML, so the row is
+     a plain div holding two buttons rather than one button wrapping
+     another. */
   function row(v){
-    var b = el('button', 'ref-row');
-    b.type = 'button';
+    var wrap = el('div', 'ref-row');
 
-    var thumb = el('span', 'ref-thumb');
+    var thumb = el('button', 'ref-thumb');
+    thumb.type = 'button';
+    thumb.setAttribute('aria-label', 'Enlarge ' + v.de);
     thumb.appendChild(GH.sprite.tile(v.n));
-    b.appendChild(thumb);
+    thumb.addEventListener('click', function(){ GH.lightbox.open(v.n, v); });
+    wrap.appendChild(thumb);
 
-    var body = el('span', 'ref-body');
+    var b = el('button', 'ref-body');
+    b.type = 'button';
 
     var de = el('span', 'ref-de');
     var a = article(v.de);
@@ -261,26 +285,25 @@ GH.reference = (function(){
     } else {
       de.appendChild(document.createTextNode(v.de));
     }
-    body.appendChild(de);
+    b.appendChild(de);
 
     var lang = GH.i18n.lang();
     var gloss = (lang === 'ru' && v.ru) ? v.ru : v.en;
     var line = el('span', 'ref-gloss');
     line.appendChild(document.createTextNode(gloss));
     if (v.rg){
-      var tag = el('span', 'ref-rg ' + (v.rg === 'PL' ? 'rg-pl' : 'rg-' + v.rg.toLowerCase()),
-                   v.rg === 'PL' && v.rgs ? 'PL·' + v.rgs : v.rg);
-      line.appendChild(tag);
+      line.appendChild(el('span', 'ref-rg ' + (v.rg === 'PL' ? 'rg-pl' : 'rg-' + v.rg.toLowerCase()),
+                          v.rg === 'PL' && v.rgs ? 'PL·' + v.rgs : v.rg));
     }
-    body.appendChild(line);
+    b.appendChild(line);
     if (lang === 'ru' && v.ru && v.en !== v.ru){
-      body.appendChild(el('span', 'ref-gloss2', v.en));
+      b.appendChild(el('span', 'ref-gloss2', v.en));
     }
-    body.appendChild(el('span', 'ref-num', '#' + v.n));
+    b.appendChild(el('span', 'ref-num', '#' + v.n));
 
-    b.appendChild(body);
     b.addEventListener('click', function(){ GH.speech.say(v.de); });
-    return b;
+    wrap.appendChild(b);
+    return wrap;
   }
 
   function paint(){
@@ -305,31 +328,101 @@ GH.reference = (function(){
       var b = el('button', 'ref-view', t(view.key));
       b.type = 'button';
       b.setAttribute('aria-pressed', state.view === view.id ? 'true' : 'false');
-      b.addEventListener('click', function(){ state.view = view.id; paint(); });
+      b.addEventListener('click', function(){
+        state.view = view.id;
+        state.open = {};          /* group labels differ per view */
+        paint();
+      });
       picker.appendChild(b);
     });
     host.appendChild(picker);
 
     var shown = pool().length, total = (window.GH_VOCAB || []).length;
     host.appendChild(el('p', 'ref-hint',
-      (shown === total ? t('refTapHint')
-                       : t('refShowing', { i:shown, n:total }) + ' · ' + t('refTapHint'))));
+      (shown === total ? t('refTapHint2')
+                       : t('refShowing', { i:shown, n:total }) + ' · ' + t('refTapHint2'))));
+
+    /* Groups start closed. 341 rows in one scroll is the thing that made
+       this section unusable; a screen of headings you can open is not.
+       A group opens on its own when it is the only one left after
+       filtering, since collapsing a list of one is just an extra tap. */
+    var gs = groups(state.view);
+    var soloOpen = gs.length === 1;
+
+    /* Jump row: Все opens everything, each other pill opens that one
+       group and scrolls to it. Without this, "open all" hands you back
+       the 341-row scroll the collapsing was meant to solve. */
+    var jump = el('div', 'ref-jump');
+
+    var allBtn = el('button', 'ref-jump-btn' + (state.allOpen ? ' on' : ''),
+                    t('refAll') + ' · ' + pool().length);
+    allBtn.type = 'button';
+    allBtn.addEventListener('click', function(){
+      state.allOpen = !state.allOpen;
+      state.open = {};
+      paint();
+    });
+    jump.appendChild(allBtn);
+
+    var nodes = {};
+    gs.forEach(function(g){
+      var isOpen = soloOpen || state.allOpen || !!state.open[g.label];
+      var b = el('button', 'ref-jump-btn' + (isOpen ? ' on' : ''));
+      b.type = 'button';
+      b.appendChild(el('span', null, g.label));
+      b.appendChild(el('span', 'ref-jump-n', g.items.length));
+      b.addEventListener('click', function(){
+        if (state.allOpen){
+          state.allOpen = false;
+          state.open = {};
+          gs.forEach(function(x){ state.open[x.label] = true; });
+        }
+        state.open[g.label] = true;
+        state.scrollTo = g.label;
+        paint();
+      });
+      jump.appendChild(b);
+    });
+    host.appendChild(jump);
 
     var list = el('div', 'ref-list');
-    groups(state.view).forEach(function(g){
-      var h = el('div', 'ref-group');
+    gs.forEach(function(g){
+      var isOpen = soloOpen || state.allOpen || !!state.open[g.label];
+
+      var h = el('button', 'ref-group' + (isOpen ? ' open' : ''));
+      h.type = 'button';
+      h.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      h.appendChild(el('span', 'ref-group-caret', isOpen ? '▾' : '▸'));
       h.appendChild(el('span', 'ref-group-name', g.label));
       h.appendChild(el('span', 'ref-group-count', g.items.length));
       if (g.note) h.appendChild(el('span', 'ref-group-note', g.note));
+      h.addEventListener('click', function(){
+        if (state.allOpen){
+          state.allOpen = false;
+          state.open = {};
+          gs.forEach(function(x){ state.open[x.label] = true; });
+        }
+        if (state.open[g.label]) delete state.open[g.label];
+        else state.open[g.label] = true;
+        paint();
+      });
       list.appendChild(h);
-      g.items.forEach(function(v){ list.appendChild(row(v)); });
+      nodes[g.label] = h;
+
+      if (isOpen) g.items.forEach(function(v){ list.appendChild(row(v)); });
     });
     host.appendChild(list);
+
+    if (state.scrollTo && nodes[state.scrollTo] && nodes[state.scrollTo].scrollIntoView){
+      nodes[state.scrollTo].scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+    state.scrollTo = null;
   }
 
   function open(container, onExit){
     host = container;
-    state = { onExit:onExit, view:'topic', cats:{}, catCount:0, filterOpen:false };
+    state = { onExit:onExit, view:'topic', cats:{}, catCount:0,
+              filterOpen:false, open:{}, allOpen:false, scrollTo:null };
     paint();
   }
 
