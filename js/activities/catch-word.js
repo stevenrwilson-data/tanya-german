@@ -57,6 +57,22 @@ GH.catchWord = (function(){
 
   var SLOTS = 9;
 
+  /* How the topic is introduced. Pictures by default — she reads the topic
+     out of what she sees rather than translating a label first. The word
+     alone is harder and worth having, so it is a toggle rather than a
+     second game. Remembered between visits. */
+  var LOOK_KEY = 'gh-cw-preview';
+
+  function previewMode(){
+    try {
+      return window.localStorage.getItem(LOOK_KEY) === 'word' ? 'word' : 'pics';
+    } catch (e){ return 'pics'; }
+  }
+
+  function setPreviewMode(m){
+    try { window.localStorage.setItem(LOOK_KEY, m); } catch (e){}
+  }
+
   var host = null;
   var state = null;
   var spawnTimer = null;
@@ -172,18 +188,23 @@ GH.catchWord = (function(){
     cardTimers.push(id);
   }
 
+  /* Letting a wrong word go is correct play and costs nothing. Letting one
+     of HERS go costs a heart, same as tapping a wrong one — both are a
+     failure to sort the word into the topic, which is the whole exercise.
+     The tile flashes red on its way out so a miss is visible rather than
+     just a heart quietly disappearing. */
   function expire(card){
     if (card.gone || state.phase !== 'play') return;
     card.gone = true;
     if (state.slots[card.slot] === card) state.slots[card.slot] = null;
-    /* Letting a wrong word go is correct play, so only a missed hit
-       counts against her — and it costs the point, never a heart. */
-    if (card.hit){
-      state.escaped++;
-      state.score = Math.max(0, state.score - 1);
-    }
-    paintSlot(card.slot);
+
+    if (!card.hit){ paintSlot(card.slot); return; }
+
+    state.escaped++;
+    state.hearts--;
+    flash(card.slot, 'missed', card.word.de);
     paintStatus();
+    if (state.hearts <= 0) finish();
   }
 
   function tap(card){
@@ -228,7 +249,7 @@ GH.catchWord = (function(){
     if (!cell) return;
     var card = state.slots[slot];
     cell.textContent = '';
-    if (!card){ cell.className = 'cw-cell'; return; }
+    if (!card){ cell.className = 'cw-cell is-empty'; return; }
     cell.className = 'cw-cell cw-up';
     cell.appendChild(el('span', 'cw-word', card.word.de));
   }
@@ -291,7 +312,7 @@ GH.catchWord = (function(){
 
     var grid = el('div', 'cw-grid');
     for (var i = 0; i < SLOTS; i++){
-      var cell = el('button', 'cw-cell');
+      var cell = el('button', 'cw-cell is-empty');
       cell.type = 'button';
       cell.setAttribute('data-slot', i);
       (function(idx){
@@ -314,8 +335,27 @@ GH.catchWord = (function(){
     if (el2) el2.textContent = state.countdown;
   }
 
+  function modeToggle(){
+    var wrap = el('div', 'mode-toggle');
+    [['pics', 'cwByPics'], ['word', 'cwByWord']].forEach(function(pair){
+      var b = el('button', null, t(pair[1]));
+      b.type = 'button';
+      b.setAttribute('aria-pressed', previewMode() === pair[0] ? 'true' : 'false');
+      b.addEventListener('click', function(){
+        setPreviewMode(pair[0]);
+        paint();
+      });
+      wrap.appendChild(b);
+    });
+    return wrap;
+  }
+
   function paintPreview(){
     var card = el('div', 'card');
+
+    var tools = el('div', 'card-tools');
+    tools.appendChild(modeToggle());
+    card.appendChild(tools);
 
     var target = el('div', 'cw-target');
     target.appendChild(el('span', 'cw-target-label', t('cwLookAt')));
@@ -326,17 +366,27 @@ GH.catchWord = (function(){
     target.appendChild(el('span', 'cw-count', state.countdown));
     card.appendChild(target);
 
-    var grid = el('div', 'cw-grid');
-    for (var i = 0; i < SLOTS; i++){
-      var cell = el('div', 'cw-cell cw-shot');
-      var w = state.preview[i];
-      if (w){
-        cell.appendChild(GH.sprite.tile(w.n));
-        cell.appendChild(el('span', 'cw-shot-word', w.de));
+    if (previewMode() === 'word'){
+      /* No pictures: the topic name alone, in German, and she has to know
+         what belongs to it without being shown. */
+      var big = el('div', 'cw-bigtopic');
+      big.appendChild(el('span', 'cw-bigtopic-glyph', state.topic.glyph));
+      big.appendChild(el('span', 'cw-bigtopic-name', state.topic.de));
+      big.appendChild(el('span', 'cw-bigtopic-sub', GH.i18n.pick(state.topic)));
+      card.appendChild(big);
+    } else {
+      var grid = el('div', 'cw-grid');
+      for (var i = 0; i < SLOTS; i++){
+        var cell = el('div', 'cw-cell cw-shot');
+        var w = state.preview[i];
+        if (w){
+          cell.appendChild(GH.sprite.tile(w.n));
+          cell.appendChild(el('span', 'cw-shot-word', w.de));
+        }
+        grid.appendChild(cell);
       }
-      grid.appendChild(cell);
+      card.appendChild(grid);
     }
-    card.appendChild(grid);
 
     var go = el('button', 'btn btn-primary', t('cwStart'));
     go.type = 'button';
