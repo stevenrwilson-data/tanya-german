@@ -1079,15 +1079,20 @@ button.ref-group.open .ref-group-count{
 
 /* preview tiles hold a picture and its word; play tiles are bare */
 .cw-cell.cw-shot{
+  /* preview tiles hold a picture AND its word, so they size to content
+     rather than staying square like the empty play tiles */
+  aspect-ratio:auto;
   border-style:solid;
   border-color:rgb(var(--sand-rgb) / .4);
   background:rgb(var(--paper-rgb) / .94);
-  flex-direction:column;gap:3px;padding:5px;
+  flex-direction:column;gap:4px;padding:6px 4px;
 }
 .cw-shot .sprite{
-  width:100%;height:auto;aspect-ratio:2 / 3;max-height:76px;
+  height:74px;width:auto;                 /* aspect-ratio supplies the width */
   border-radius:var(--r-sm);
+  flex:0 0 auto;
 }
+@media (min-width:561px){ .cw-shot .sprite{height:96px} }
 .cw-shot-word{
   font-family:var(--ff-display);
   font-size:clamp(.62rem,2.4vw,.8rem);
@@ -1097,9 +1102,43 @@ button.ref-group.open .ref-group-count{
 
 /* empty play tiles rotate through the palette so the grid reads as
    waiting rather than broken */
-.cw-cell:nth-child(3n+1){background:rgb(var(--sand-rgb) / .13)}
-.cw-cell:nth-child(3n+2){background:rgb(var(--mauve-rgb) / .15)}
-.cw-cell:nth-child(3n+3){background:rgb(var(--liver-rgb) / .10)}
-.cw-cell.cw-up,.cw-cell.cw-shot,.cw-cell.cw-hit,.cw-cell.cw-wrong{
-  background-image:none;
+/* Only the empty waiting tiles get tinted. Without the :not() guards these
+   rules also repainted the tiles holding a word or a picture, which put dark
+   text on a dark tint and made the words invisible. */
+.cw-cell.is-empty:nth-child(3n+1){background:rgb(var(--sand-rgb) / .13)}
+.cw-cell.is-empty:nth-child(3n+2){background:rgb(var(--mauve-rgb) / .15)}
+.cw-cell.is-empty:nth-child(3n+3){background:rgb(var(--liver-rgb) / .16)}
+
+/* a word of hers that got away — red flash on the way out */
+.cw-cell.cw-missed{
+  border-style:solid;
+  border-color:var(--flame);
+  background:rgb(var(--flame-rgb) / .3);
+  animation:cw-miss .38s ease-out;
+}
+.cw-missed .cw-word{color:var(--on-dark);text-decoration:line-through}
+@keyframes cw-miss{
+  0%{transform:scale(1);opacity:1}
+  40%{transform:scale(1.04)}
+  100%{transform:scale(.97);opacity:.55}
+}
+@media (prefers-reduced-motion:reduce){
+  .cw-cell.cw-missed{animation:none}
+}
+
+/* topic shown as a word instead of pictures */
+.cw-bigtopic{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  padding:36px 16px 30px;text-align:center;
+}
+.cw-bigtopic-glyph{font-size:3rem;line-height:1}
+.cw-bigtopic-name{
+  font-family:var(--ff-display);
+  font-size:clamp(1.7rem,7vw,2.6rem);
+  line-height:1.1;color:var(--on-dark);
+}
+.cw-bigtopic-sub{
+  font:600 .84rem/1 var(--ff-ui);
+  text-transform:uppercase;letter-spacing:.08em;
+  color:rgb(var(--sand-rgb) / .72);
 }
