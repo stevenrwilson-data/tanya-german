@@ -119,6 +119,11 @@ GH.listenPick = (function(){
     it.answered = true;
     it.timedOut = true;
     it.correct = false;
+    if (GH.progress){
+      GH.progress.record('word:' + it.word.n, false);
+      GH.progress.record('topic:' + it.word.cat, false);
+      GH.progress.record('skill:listening', false);
+    }
     paint();
     GH.speech.say(it.sentence.de);
   }
@@ -133,6 +138,11 @@ GH.listenPick = (function(){
     stopClock();
     it.answered = true;
     it.correct = opt.n === it.word.n;
+    if (GH.progress){
+      GH.progress.record('word:' + it.word.n, it.correct);
+      GH.progress.record('topic:' + it.word.cat, it.correct);
+      GH.progress.record('skill:listening', it.correct);
+    }
     paint();
     GH.speech.say(it.sentence.de);
   }
@@ -279,6 +289,10 @@ GH.listenPick = (function(){
     titles.appendChild(el('p', null, t('lpPickLevel')));
     head.appendChild(titles);
     host.appendChild(head);
+
+    var tools = el('div', 'card-tools');
+    tools.appendChild(GH.howto.button('lpTitle', 'lpRule'));
+    host.appendChild(tools);
 
     var grid = el('div', 'tiles');
     LEVELS.forEach(function(lv){

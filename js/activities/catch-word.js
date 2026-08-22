@@ -41,12 +41,12 @@ GH.catchWord = (function(){
     body:     ['bath', 'beauty'],
     beauty:   ['body', 'bath'],
     places:   ['shopping', 'travel'],
-    shopping: ['places'],
+    shopping: ['places', 'describe'],
     travel:   ['places'],
-    time:     ['weather'],
+    time:     ['weather', 'numbers'],
     weather:  ['time', 'describe'],
     colors:   ['describe'],
-    describe: ['colors', 'weather'],
+    describe: ['colors', 'weather', 'shopping'],
     family:   [],
     /* Numbers and the clock words live together — 'zehn' is a number and
        'in einer Stunde' is time, and either could reasonably be called
@@ -100,10 +100,38 @@ GH.catchWord = (function(){
     return topics().filter(function(c){ return wordsIn(c.id).length >= 6; });
   }
 
+  /* Words are compared, not just topics. 'billig' is filed under both
+     shopping and describe, 'kalt' under both weather and describe, and
+     'passt gut' is shopping but reads as a description to anyone. Any of
+     those offered as a wrong answer punishes a defensible tap, so a
+     distractor is dropped when it shares a content word with anything in
+     the target topic. */
+  function contentWords(de){
+    return de.toLowerCase()
+      .replace(/[^a-zäöüß\s]/g, ' ')
+      .split(/\s+/)
+      .filter(function(w){
+        return w.length >= 4 && !DET_ISH[w];
+      });
+  }
+
+  var DET_ISH = { der:1, die:1, das:1, ein:1, eine:1, einen:1, einem:1, einer:1,
+                  mit:1, dem:1, den:1, und:1, ist:1, sehr:1, nach:1, vor:1,
+                  eine:1, sich:1, zum:1, zur:1, beim:1 };
+
   function distractorsFor(catId){
     var bad = NEIGHBOURS[catId] || [];
+    var own = {};
+    (window.GH_VOCAB || []).forEach(function(v){
+      if (v.cat !== catId) return;
+      contentWords(v.de).forEach(function(w){ own[w] = true; });
+    });
     return (window.GH_VOCAB || []).filter(function(v){
-      return v.cat !== catId && bad.indexOf(v.cat) < 0;
+      if (v.cat === catId) return false;
+      if (bad.indexOf(v.cat) >= 0) return false;
+      var words = contentWords(v.de);
+      for (var i = 0; i < words.length; i++) if (own[words[i]]) return false;
+      return true;
     });
   }
 
@@ -114,6 +142,7 @@ GH.catchWord = (function(){
     cardTimers.forEach(function(id){ clearTimeout(id); });
     cardTimers = [];
   }
+
 
   /* ---------- a round ---------- */
 
@@ -182,7 +211,8 @@ GH.catchWord = (function(){
     var word = from[Math.floor(Math.random() * from.length)];
 
     state.spawned++;
-    var card = { word:word, hit:isHit, slot:slot, id:state.spawned, gone:false };
+    var card = { word:word, hit:isHit, slot:slot, id:state.spawned, gone:false,
+                 born:Date.now(), dies:Date.now() + state.cfg.visible };
     state.slots[slot] = card;
     paintSlot(slot);
 
@@ -204,6 +234,10 @@ GH.catchWord = (function(){
 
     state.escaped++;
     state.missedWords.push(card.word);
+    if (GH.progress){
+      GH.progress.record('topic:' + state.topic.id, false);
+      GH.progress.record('word:' + card.word.n, false);
+    }
     state.hearts--;
     flash(card.slot, 'missed', card.word.de);
     paintStatus();
@@ -215,6 +249,10 @@ GH.catchWord = (function(){
     card.gone = true;
     if (state.slots[card.slot] === card) state.slots[card.slot] = null;
 
+    if (GH.progress){
+      GH.progress.record('topic:' + state.topic.id, card.hit);
+      GH.progress.record('word:' + card.word.n, card.hit);
+    }
     if (card.hit){
       state.caught++;
       state.score++;
@@ -403,6 +441,10 @@ GH.catchWord = (function(){
   }
 
   function paintLevels(){
+    var tools = el('div', 'card-tools');
+    tools.appendChild(GH.howto.button('cwTitle', 'cwRule'));
+    host.appendChild(tools);
+
     var grid = el('div', 'tiles');
     ORDER.forEach(function(id){
       var d = DIFFICULTY[id];
